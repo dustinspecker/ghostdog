@@ -10,3 +10,13 @@ func TestRunBuildFileParsesStarlark(t *testing.T) {
 		t.Fatalf("expected the BUILD file to run: %w", err)
 	}
 }
+
+func TestRunBuildFileDefinesFilesFunction(t *testing.T) {
+	data := `
+print('hello')
+files(name="test", paths=[])
+`
+	if err := RunBuildFile("BUILD", strings.NewReader(data)); err != nil {
+		t.Fatalf("expected `files` function to work: %w", err)
+	}
+}

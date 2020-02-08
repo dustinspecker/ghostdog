@@ -1,1 +1,4 @@
-print('hello!')
+files(
+  name = "makefile",
+  paths = ["Makefile"]
+)

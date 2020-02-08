@@ -15,7 +15,10 @@
 ghostdog uses `BUILD` files written with [Starlark](https://github.com/bazelbuild/starlark) to understand how to build packages. An example `BUILD` file looks like:
 
 ```starlark
-print('hello')
+files(
+  name = "makefile",
+  paths = ["Makefile"]
+)
 ```
 
 More examples exist in the [examples directory](examples).
