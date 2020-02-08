@@ -1,3 +1,3 @@
 .PHONY: test-unit
 test-unit:
-	go test ./... -cover
+	go test ./... -cover -coverprofile=cover.out
