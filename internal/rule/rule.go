@@ -5,4 +5,6 @@ type Rule struct {
 	Commands []string
 	Sources  []string
 	Outputs  []string
+	Parents  []*Rule
+	Children []*Rule
 }
