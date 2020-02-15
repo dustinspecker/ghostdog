@@ -20,3 +20,13 @@ files(name="test", paths=[])
 		t.Fatalf("expected `files` function to work: %w", err)
 	}
 }
+
+func TestRunBuildFileDefinesRuleFunction(t *testing.T) {
+	data := `
+print('hello')
+rule(name="test", sources=[], commands=["make build"], outputs=[])
+`
+	if err := RunBuildFile("BUILD", strings.NewReader(data)); err != nil {
+		t.Fatalf("expected `rule` function to work: %w", err)
+	}
+}

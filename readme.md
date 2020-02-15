@@ -19,6 +19,18 @@ files(
   name = "makefile",
   paths = ["Makefile"]
 )
+
+files(
+  name = "source_code",
+  paths = ["pkg/main.go"]
+)
+
+rule(
+  name = "build",
+  sources = ["makefile", "source_code"],
+  commands = ["make build"],
+  outputs = ["main"]
+)
 ```
 
 More examples exist in the [examples directory](examples).

@@ -18,6 +18,7 @@ func RunBuildFile(buildFileName string, buildFileData io.Reader) error {
 
 	nativeFunctions := starlark.StringDict{
 		"files": starlark.NewBuiltin("files", builtins.Files(addRule)),
+		"rule":  starlark.NewBuiltin("rule", builtins.Rule(addRule)),
 	}
 
 	_, err := starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
