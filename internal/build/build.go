@@ -6,13 +6,18 @@ import (
 	"go.starlark.net/starlark"
 
 	"github.com/dustinspecker/ghostdog/internal/builtins"
+	"github.com/dustinspecker/ghostdog/internal/dag"
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
 func RunBuildFile(buildFileName string, buildFileData io.Reader) error {
 	thread := &starlark.Thread{Name: "ghostdog-main"}
 
+	rulesDag := dag.NewDag()
+
 	addRule := func(rule rule.Rule) error {
+		rulesDag.AddRule(&rule)
+
 		return nil
 	}
 
@@ -22,6 +27,17 @@ func RunBuildFile(buildFileName string, buildFileData io.Reader) error {
 	}
 
 	_, err := starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
+	if err != nil {
+		return err
+	}
 
-	return err
+	for id, rule := range rulesDag.Rules {
+		for _, dependOn := range rule.Sources {
+			if err = rulesDag.AddDependency(id, dependOn); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
