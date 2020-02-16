@@ -39,5 +39,23 @@ func RunBuildFile(buildFileName string, buildFileData io.Reader) error {
 		}
 	}
 
+	for _, rule := range rulesDag.GetSources() {
+		if err = run(rule); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func run(rule *rule.Rule) error {
+	for _, child := range rule.Children {
+		run(child)
+	}
+
+	if err := rule.RunCommand(); err != nil {
+		return err
+	}
+
 	return nil
 }
