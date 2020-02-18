@@ -16,7 +16,9 @@ func GetRulesDag(buildFileName string, buildFileData io.Reader) (dag.Dag, error)
 	rulesDag := dag.NewDag()
 
 	addRule := func(rule rule.Rule) error {
-		rulesDag.AddRule(&rule)
+		if err := rulesDag.AddRule(&rule); err != nil {
+			return err
+		}
 
 		return nil
 	}

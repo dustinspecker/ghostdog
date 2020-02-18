@@ -46,3 +46,19 @@ rule(invalid_args=1)
 		t.Error("should return error if failed to run BUILD file")
 	}
 }
+
+func TestGetRulesDagReturnsErrorWhenDuplicateRuleNameFound(t *testing.T) {
+	data := `
+rule(name="test", sources=[], commands=["echo hey"], outputs=[])
+rule(name="test", sources=[], commands=["echo hey"], outputs=[])
+`
+
+	_, err := GetRulesDag("BUILD", strings.NewReader(data))
+	if err == nil {
+		t.Error("should return error when duplicate rule name is found")
+	}
+
+	if !strings.Contains(err.Error(), "already exists") {
+		t.Errorf("error should mention already exists: %v", err)
+	}
+}
