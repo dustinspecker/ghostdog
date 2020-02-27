@@ -14,5 +14,5 @@ rule(
   name = "something",
   sources = ["makefile"],
   commands = ["make something"],
-  outputs = []
+  outputs = ["dist/something"]
 )
