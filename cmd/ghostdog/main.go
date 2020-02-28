@@ -9,6 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/dustinspecker/ghostdog/internal/build"
+	"github.com/dustinspecker/ghostdog/internal/graph"
 )
 
 func main() {
@@ -37,6 +38,16 @@ func main() {
 					buildFilePath := c.Args().Get(0)
 
 					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, filepath.Join(c.String("cache-directory"), "ghostdog"))
+				},
+			},
+			{
+				Name:      "graph",
+				Usage:     "create a graph (DOT) of the build dependencies",
+				ArgsUsage: "BUILD_FILE",
+				Action: func(c *cli.Context) error {
+					buildFilePath := c.Args().Get(0)
+
+					return graph.GetGraph(afero.NewOsFs(), buildFilePath, os.Stdout)
 				},
 			},
 		},
