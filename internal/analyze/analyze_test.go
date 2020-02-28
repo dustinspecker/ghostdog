@@ -62,3 +62,18 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 		t.Errorf("error should mention already exists: %v", err)
 	}
 }
+
+func TestGetRulesDagReturnsErrorWhenSourceDoesntExist(t *testing.T) {
+	data := `
+rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
+`
+
+	_, err := GetRulesDag("BUILD", strings.NewReader(data))
+	if err == nil {
+		t.Error("should return error when rule name is not found")
+	}
+
+	if !strings.Contains(err.Error(), "not found") {
+		t.Errorf("error should mention not found: %v", err)
+	}
+}
