@@ -32,8 +32,9 @@ func main() {
 						EnvVars: []string{"XDG_CACHE_DIR"},
 					},
 				},
+				ArgsUsage: "BUILD_FILE",
 				Action: func(c *cli.Context) error {
-					buildFilePath := "BUILD"
+					buildFilePath := c.Args().Get(0)
 
 					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
