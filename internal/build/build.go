@@ -2,7 +2,6 @@ package build
 
 import (
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/spf13/afero"
@@ -12,8 +11,13 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(fs afero.Fs, buildFileName string, buildFileData io.Reader, cacheDirectory string) error {
-	rulesDag, err := analyze.GetRulesDag(buildFileName, buildFileData)
+func RunBuildFile(fs afero.Fs, buildFileName string, cacheDirectory string) error {
+	buildFile, err := fs.Open(buildFileName)
+	if err != nil {
+		return err
+	}
+
+	rulesDag, err := analyze.GetRulesDag(buildFileName, buildFile)
 	if err != nil {
 		return err
 	}

@@ -35,12 +35,7 @@ func main() {
 				Action: func(c *cli.Context) error {
 					buildFilePath := "BUILD"
 
-					buildFileData, err := os.Open(buildFilePath)
-					if err != nil {
-						return err
-					}
-
-					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, buildFileData, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 		},
