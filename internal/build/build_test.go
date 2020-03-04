@@ -17,3 +17,23 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
 }
+
+func TestRunBuildFileReturnsErrorWhenFailToBuildRulesDag(t *testing.T) {
+	data := `
+doesnt_exist()
+`
+	err := RunBuildFile(afero.NewMemMapFs(), "BUILD", strings.NewReader(data), "cache-dir")
+	if err == nil {
+		t.Fatal("expected to fail to build dag")
+	}
+}
+
+func TestRunBuildFileReturnsErrorWhenACommandReturnsNonZeroExit(t *testing.T) {
+	data := `
+rule(name="test", sources=[], commands=["false"], outputs=[])
+`
+	err := RunBuildFile(afero.NewMemMapFs(), "BUILD", strings.NewReader(data), "cache-dir")
+	if err == nil {
+		t.Fatal("expected test command to fail")
+	}
+}
