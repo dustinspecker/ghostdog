@@ -33,21 +33,23 @@ func main() {
 						EnvVars: []string{"XDG_CACHE_DIR"},
 					},
 				},
-				ArgsUsage: "BUILD_FILE",
+				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
 					buildFilePath := c.Args().Get(0)
+					buildTarget := c.Args().Get(1)
 
-					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(afero.NewOsFs(), buildFilePath, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 			{
 				Name:      "graph",
 				Usage:     "create a graph (DOT) of the build dependencies",
-				ArgsUsage: "BUILD_FILE",
+				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
 					buildFilePath := c.Args().Get(0)
+					buildTarget := c.Args().Get(1)
 
-					return graph.GetGraph(afero.NewOsFs(), buildFilePath, os.Stdout)
+					return graph.GetGraph(afero.NewOsFs(), buildFilePath, buildTarget, os.Stdout)
 				},
 			},
 		},

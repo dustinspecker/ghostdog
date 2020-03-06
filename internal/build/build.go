@@ -11,7 +11,7 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(fs afero.Fs, buildFileName string, cacheDirectory string) error {
+func RunBuildFile(fs afero.Fs, buildFileName, buildTarget string, cacheDirectory string) error {
 	buildFile, err := fs.Open(buildFileName)
 	if err != nil {
 		return err
@@ -22,7 +22,20 @@ func RunBuildFile(fs afero.Fs, buildFileName string, cacheDirectory string) erro
 		return err
 	}
 
-	for _, rule := range rulesDag.GetSources() {
+	rules := rulesDag.GetSources()
+
+	if buildTarget != "all" {
+		targetRule, ok := rulesDag.Rules[buildTarget]
+		if !ok {
+			return fmt.Errorf("target %s not found", buildTarget)
+		}
+
+		rules = []*rule.Rule{
+			targetRule,
+		}
+	}
+
+	for _, rule := range rules {
 		if err = run(fs, *rule, cacheDirectory); err != nil {
 			return err
 		}
