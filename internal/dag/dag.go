@@ -57,12 +57,12 @@ func (dag *Dag) AddRule(rule *rule.Rule) error {
 	return nil
 }
 
-func (dag Dag) GetSources() []*rule.Rule {
-	sources := []*rule.Rule{}
+func (dag Dag) GetSources() map[string]*rule.Rule {
+	sources := map[string]*rule.Rule{}
 
 	for _, rule := range dag.Rules {
 		if len(rule.Parents) == 0 {
-			sources = append(sources, rule)
+			sources[rule.Name] = rule
 		}
 	}
 

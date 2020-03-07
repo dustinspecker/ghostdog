@@ -162,25 +162,12 @@ func TestGetSources(t *testing.T) {
 
 	sources := dag.GetSources()
 
-	if len(sources) != 2 {
-		t.Fatalf("expected there to be 2 sources, but got %v", sources)
+	expectedSources := map[string]*rule.Rule{
+		"a": sourceA,
+		"b": sourceB,
 	}
 
-	if !containsRule(sources, sourceA) {
-		t.Errorf("expected sources to contain sourceA, but it did not: %v", sources)
+	if !reflect.DeepEqual(sources, expectedSources) {
+		t.Errorf("expected sources to be a map containing only sourceA and sourceB, but got %v", sources)
 	}
-
-	if !containsRule(sources, sourceB) {
-		t.Errorf("expected sources to contain sourceB, but it did not: %v", sources)
-	}
-}
-
-func containsRule(rules []*rule.Rule, rule *rule.Rule) bool {
-	for _, r := range rules {
-		if r == rule {
-			return true
-		}
-	}
-
-	return false
 }

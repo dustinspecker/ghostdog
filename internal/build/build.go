@@ -30,8 +30,8 @@ func RunBuildFile(fs afero.Fs, buildFileName, buildTarget string, cacheDirectory
 			return fmt.Errorf("target %s not found", buildTarget)
 		}
 
-		rules = []*rule.Rule{
-			targetRule,
+		rules = map[string]*rule.Rule{
+			targetRule.Name: targetRule,
 		}
 	}
 
