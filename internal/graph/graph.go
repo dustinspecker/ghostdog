@@ -11,12 +11,7 @@ import (
 )
 
 func GetGraph(fs afero.Fs, buildFileName, buildTarget string, outputFile io.Writer) error {
-	buildFile, err := fs.Open(buildFileName)
-	if err != nil {
-		return err
-	}
-
-	rules, err := analyze.GetRules(buildFileName, buildFile, buildTarget)
+	rules, err := analyze.GetRules(fs, buildFileName, buildTarget)
 	if err != nil {
 		return err
 	}

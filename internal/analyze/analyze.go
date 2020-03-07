@@ -2,8 +2,8 @@ package analyze
 
 import (
 	"fmt"
-	"io"
 
+	"github.com/spf13/afero"
 	"go.starlark.net/starlark"
 
 	"github.com/dustinspecker/ghostdog/internal/builtins"
@@ -11,7 +11,12 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetRules(buildFileName string, buildFileData io.Reader, buildTarget string) (map[string]*rule.Rule, error) {
+func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string]*rule.Rule, error) {
+	buildFileData, err := fs.Open(buildFileName)
+	if err != nil {
+		return nil, err
+	}
+
 	thread := &starlark.Thread{Name: "ghostdog-main"}
 
 	rulesDag := dag.NewDag()
@@ -29,7 +34,7 @@ func GetRules(buildFileName string, buildFileData io.Reader, buildTarget string)
 		"rule":  starlark.NewBuiltin("rule", builtins.Rule(addRule)),
 	}
 
-	_, err := starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
+	_, err = starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
 	if err != nil {
 		return nil, err
 	}
