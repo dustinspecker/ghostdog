@@ -8,17 +8,17 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func TestGetRulesDag(t *testing.T) {
+func TestGetRules(t *testing.T) {
 	data := `
 rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
-	rulesDag, err := GetRulesDag("BUILD", strings.NewReader(data))
+	rules, err := GetRules("BUILD", strings.NewReader(data))
 	if err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
 
-	testRule, ok := rulesDag.Rules["test"]
+	testRule, ok := rules["test"]
 	if !ok {
 		t.Fatal("expected rulesDag to have a rule with test id")
 	}
@@ -27,7 +27,7 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 		t.Errorf("expected test's children to be empty, but got %v", testRule.Children)
 	}
 
-	publishRule, ok := rulesDag.Rules["publish"]
+	publishRule, ok := rules["publish"]
 	if !ok {
 		t.Fatal("expected rulesDag to have a rule with publish id")
 	}
@@ -37,23 +37,23 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 	}
 }
 
-func TestGetRulesDagReturnsErrorWhenItFailsToRunBuildFile(t *testing.T) {
+func TestGetRulesReturnsErrorWhenItFailsToRunBuildFile(t *testing.T) {
 	data := `
 rule(invalid_args=1)
 `
-	_, err := GetRulesDag("BUILD", strings.NewReader(data))
+	_, err := GetRules("BUILD", strings.NewReader(data))
 	if err == nil {
 		t.Error("should return error if failed to run BUILD file")
 	}
 }
 
-func TestGetRulesDagReturnsErrorWhenDuplicateRuleNameFound(t *testing.T) {
+func TestGetRulesReturnsErrorWhenDuplicateRuleNameFound(t *testing.T) {
 	data := `
 rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 `
 
-	_, err := GetRulesDag("BUILD", strings.NewReader(data))
+	_, err := GetRules("BUILD", strings.NewReader(data))
 	if err == nil {
 		t.Error("should return error when duplicate rule name is found")
 	}
@@ -63,12 +63,12 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 	}
 }
 
-func TestGetRulesDagReturnsErrorWhenSourceDoesntExist(t *testing.T) {
+func TestGetRulesReturnsErrorWhenSourceDoesntExist(t *testing.T) {
 	data := `
 rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
 `
 
-	_, err := GetRulesDag("BUILD", strings.NewReader(data))
+	_, err := GetRules("BUILD", strings.NewReader(data))
 	if err == nil {
 		t.Error("should return error when rule name is not found")
 	}

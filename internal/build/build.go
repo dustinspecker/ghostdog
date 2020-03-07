@@ -17,15 +17,13 @@ func RunBuildFile(fs afero.Fs, buildFileName, buildTarget string, cacheDirectory
 		return err
 	}
 
-	rulesDag, err := analyze.GetRulesDag(buildFileName, buildFile)
+	rules, err := analyze.GetRules(buildFileName, buildFile)
 	if err != nil {
 		return err
 	}
 
-	rules := rulesDag.GetSources()
-
 	if buildTarget != "all" {
-		targetRule, ok := rulesDag.Rules[buildTarget]
+		targetRule, ok := rules[buildTarget]
 		if !ok {
 			return fmt.Errorf("target %s not found", buildTarget)
 		}

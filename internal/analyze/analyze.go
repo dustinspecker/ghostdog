@@ -10,7 +10,7 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetRulesDag(buildFileName string, buildFileData io.Reader) (dag.Dag, error) {
+func GetRules(buildFileName string, buildFileData io.Reader) (map[string]*rule.Rule, error) {
 	thread := &starlark.Thread{Name: "ghostdog-main"}
 
 	rulesDag := dag.NewDag()
@@ -30,16 +30,16 @@ func GetRulesDag(buildFileName string, buildFileData io.Reader) (dag.Dag, error)
 
 	_, err := starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
 	if err != nil {
-		return rulesDag, err
+		return nil, err
 	}
 
 	for id, rule := range rulesDag.Rules {
 		for _, source := range rule.Sources {
 			if err = rulesDag.AddDependency(id, source); err != nil {
-				return rulesDag, err
+				return nil, err
 			}
 		}
 	}
 
-	return rulesDag, nil
+	return rulesDag.Rules, nil
 }

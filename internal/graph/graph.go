@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/dustinspecker/ghostdog/internal/analyze"
-	"github.com/dustinspecker/ghostdog/internal/dag"
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
@@ -17,12 +16,12 @@ func GetGraph(fs afero.Fs, buildFileName, buildTarget string, outputFile io.Writ
 		return err
 	}
 
-	rulesDag, err := analyze.GetRulesDag(buildFileName, buildFile)
+	rules, err := analyze.GetRules(buildFileName, buildFile)
 	if err != nil {
 		return err
 	}
 
-	dotGraph, err := getDotGraph(rulesDag, buildTarget)
+	dotGraph, err := getDotGraph(rules, buildTarget)
 	if err != nil {
 		return err
 	}
@@ -32,13 +31,11 @@ func GetGraph(fs afero.Fs, buildFileName, buildTarget string, outputFile io.Writ
 	return err
 }
 
-func getDotGraph(rulesDag dag.Dag, buildTarget string) (string, error) {
+func getDotGraph(rules map[string]*rule.Rule, buildTarget string) (string, error) {
 	dagString := "digraph g {\n"
 
-	rules := rulesDag.Rules
-
 	if buildTarget != "all" {
-		targetRule, ok := rulesDag.Rules[buildTarget]
+		targetRule, ok := rules[buildTarget]
 		if !ok {
 			return "", fmt.Errorf("target %s not found", buildTarget)
 		}
