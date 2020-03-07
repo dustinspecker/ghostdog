@@ -1,6 +1,7 @@
 package analyze
 
 import (
+	"fmt"
 	"io"
 
 	"go.starlark.net/starlark"
@@ -10,7 +11,7 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetRules(buildFileName string, buildFileData io.Reader) (map[string]*rule.Rule, error) {
+func GetRules(buildFileName string, buildFileData io.Reader, buildTarget string) (map[string]*rule.Rule, error) {
 	thread := &starlark.Thread{Name: "ghostdog-main"}
 
 	rulesDag := dag.NewDag()
@@ -41,5 +42,15 @@ func GetRules(buildFileName string, buildFileData io.Reader) (map[string]*rule.R
 		}
 	}
 
-	return rulesDag.Rules, nil
+	if buildTarget == "all" {
+		return rulesDag.GetSources(), nil
+	}
+
+	if _, ok := rulesDag.Rules[buildTarget]; !ok {
+		return nil, fmt.Errorf("target %s not found", buildTarget)
+	}
+
+	return map[string]*rule.Rule{
+		buildTarget: rulesDag.Rules[buildTarget],
+	}, nil
 }

@@ -16,34 +16,20 @@ func GetGraph(fs afero.Fs, buildFileName, buildTarget string, outputFile io.Writ
 		return err
 	}
 
-	rules, err := analyze.GetRules(buildFileName, buildFile)
+	rules, err := analyze.GetRules(buildFileName, buildFile, buildTarget)
 	if err != nil {
 		return err
 	}
 
-	dotGraph, err := getDotGraph(rules, buildTarget)
-	if err != nil {
-		return err
-	}
+	dotGraph := getDotGraph(rules)
 
 	_, err = outputFile.Write([]byte(dotGraph))
 
 	return err
 }
 
-func getDotGraph(rules map[string]*rule.Rule, buildTarget string) (string, error) {
+func getDotGraph(rules map[string]*rule.Rule) string {
 	dagString := "digraph g {\n"
-
-	if buildTarget != "all" {
-		targetRule, ok := rules[buildTarget]
-		if !ok {
-			return "", fmt.Errorf("target %s not found", buildTarget)
-		}
-
-		rules = map[string]*rule.Rule{
-			targetRule.Name: targetRule,
-		}
-	}
 
 	for _, rule := range rules {
 		for _, child := range rule.Children {
@@ -53,5 +39,5 @@ func getDotGraph(rules map[string]*rule.Rule, buildTarget string) (string, error
 
 	dagString = dagString + "}"
 
-	return dagString, nil
+	return dagString
 }
