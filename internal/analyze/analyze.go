@@ -22,11 +22,8 @@ func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string
 	rulesDag := dag.NewDag()
 
 	addRule := func(rule rule.Rule) error {
-		if err := rulesDag.AddRule(&rule); err != nil {
-			return err
-		}
 
-		return nil
+		return rulesDag.AddRule(&rule)
 	}
 
 	nativeFunctions := starlark.StringDict{
