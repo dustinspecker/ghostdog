@@ -11,13 +11,13 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetGraph(fs afero.Fs, cwd, packagePath, buildTarget string, outputFile io.Writer) error {
-	buildFileName, err := resolver.GetBuildFileForPackage(fs, cwd, packagePath)
+func GetGraph(fs afero.Fs, cwd, buildTarget string, outputFile io.Writer) error {
+	buildFileName, targetRule, err := resolver.GetBuildInfoForPackage(fs, cwd, buildTarget)
 	if err != nil {
 		return err
 	}
 
-	rules, err := analyze.GetRules(fs, buildFileName, buildTarget)
+	rules, err := analyze.GetRules(fs, buildFileName, targetRule)
 	if err != nil {
 		return err
 	}

@@ -12,13 +12,13 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(fs afero.Fs, cwd, packagePath, buildTarget string, cacheDirectory string) error {
-	buildFileName, err := resolver.GetBuildFileForPackage(fs, cwd, packagePath)
+func RunBuildFile(fs afero.Fs, cwd, buildTarget string, cacheDirectory string) error {
+	buildFileName, targetRule, err := resolver.GetBuildInfoForPackage(fs, cwd, buildTarget)
 	if err != nil {
 		return err
 	}
 
-	rules, err := analyze.GetRules(fs, buildFileName, buildTarget)
+	rules, err := analyze.GetRules(fs, buildFileName, targetRule)
 	if err != nil {
 		return err
 	}

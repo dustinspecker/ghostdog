@@ -35,15 +35,14 @@ func main() {
 				},
 				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
-					packagePath := c.Args().Get(0)
-					buildTarget := c.Args().Get(1)
+					buildTarget := c.Args().Get(0)
 
 					cwd, err := os.Getwd()
 					if err != nil {
 						return err
 					}
 
-					return build.RunBuildFile(afero.NewOsFs(), cwd, packagePath, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(afero.NewOsFs(), cwd, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 			{
@@ -51,14 +50,13 @@ func main() {
 				Usage:     "create a graph (DOT) of the build dependencies",
 				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
-					packagePath := c.Args().Get(0)
-					buildTarget := c.Args().Get(1)
+					buildTarget := c.Args().Get(0)
 
 					cwd, err := os.Getwd()
 					if err != nil {
 						return err
 					}
-					return graph.GetGraph(afero.NewOsFs(), cwd, packagePath, buildTarget, os.Stdout)
+					return graph.GetGraph(afero.NewOsFs(), cwd, buildTarget, os.Stdout)
 				},
 			},
 		},
