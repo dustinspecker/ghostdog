@@ -24,7 +24,7 @@ rule(name="build", sources=[], commands=["build"], outputs=[])
 		t.Fatalf("unexpected error while getting tempFile: %w", err)
 	}
 
-	if err := GetGraph(fs, "BUILD", "all", tempFile); err != nil {
+	if err := GetGraph(fs, ".", ".", "all", tempFile); err != nil {
 		t.Fatalf("unexpected error while getting graph: %w", err)
 	}
 
@@ -56,7 +56,7 @@ rule(name="publish", sources=["build"], commands=["publish"], outputs=[])
 		t.Fatalf("unexpected error while getting tempFile: %w", err)
 	}
 
-	if err := GetGraph(fs, "BUILD", "publish", tempFile); err != nil {
+	if err := GetGraph(fs, ".", ".", "publish", tempFile); err != nil {
 		t.Fatalf("unexpected error while getting graph: %w", err)
 	}
 
@@ -83,7 +83,7 @@ func TestGetGraphReturnsReturnsEmptyDigraphWhenNoRules(t *testing.T) {
 		t.Fatalf("unexpected error while getting tempFile: %w", err)
 	}
 
-	if err := GetGraph(fs, "BUILD", "all", tempFile); err != nil {
+	if err := GetGraph(fs, ".", ".", "all", tempFile); err != nil {
 		t.Fatalf("unexpected error while getting graph: %w", err)
 	}
 
@@ -99,7 +99,7 @@ func TestGetGraphReturnsReturnsEmptyDigraphWhenNoRules(t *testing.T) {
 }
 
 func TestGetGraphReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
-	if err := GetGraph(afero.NewMemMapFs(), "BUILD", "all", &os.File{}); err == nil {
+	if err := GetGraph(afero.NewMemMapFs(), ".", ".", "all", &os.File{}); err == nil {
 		t.Error("expected an error when BUILD file doesn't exist")
 	}
 }
@@ -111,7 +111,7 @@ func TestGetGraphReturnsReturnsErrorWhenTargetDoesntExist(t *testing.T) {
 		t.Fatalf("unexpected error while writing BUILD file: %w", err)
 	}
 
-	err := GetGraph(fs, "BUILD", "build", &os.File{})
+	err := GetGraph(fs, ".", ".", "build", &os.File{})
 	if err == nil {
 		t.Fatal("expected an error when target doesn't exist")
 	}
@@ -128,7 +128,7 @@ func TestGetGraphReturnsErrorWhenRulesDagCantBeBuilt(t *testing.T) {
 		t.Fatal("unexpected error while writing BUILD file: %w", err)
 	}
 
-	if err := GetGraph(fs, "BUILD", "all", &os.File{}); err == nil {
+	if err := GetGraph(fs, ".", ".", "all", &os.File{}); err == nil {
 		t.Error("expected an error when rules dag couldn't be built")
 	}
 }

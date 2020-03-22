@@ -8,10 +8,16 @@ import (
 
 	"github.com/dustinspecker/ghostdog/internal/analyze"
 	"github.com/dustinspecker/ghostdog/internal/cache"
+	"github.com/dustinspecker/ghostdog/internal/resolver"
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(fs afero.Fs, buildFileName, buildTarget string, cacheDirectory string) error {
+func RunBuildFile(fs afero.Fs, cwd, packagePath, buildTarget string, cacheDirectory string) error {
+	buildFileName, err := resolver.GetBuildFileForPackage(fs, cwd, packagePath)
+	if err != nil {
+		return err
+	}
+
 	rules, err := analyze.GetRules(fs, buildFileName, buildTarget)
 	if err != nil {
 		return err

@@ -7,10 +7,16 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/dustinspecker/ghostdog/internal/analyze"
+	"github.com/dustinspecker/ghostdog/internal/resolver"
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetGraph(fs afero.Fs, buildFileName, buildTarget string, outputFile io.Writer) error {
+func GetGraph(fs afero.Fs, cwd, packagePath, buildTarget string, outputFile io.Writer) error {
+	buildFileName, err := resolver.GetBuildFileForPackage(fs, cwd, packagePath)
+	if err != nil {
+		return err
+	}
+
 	rules, err := analyze.GetRules(fs, buildFileName, buildTarget)
 	if err != nil {
 		return err

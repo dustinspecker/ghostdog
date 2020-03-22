@@ -5,7 +5,6 @@ package integration
 import (
 	"os"
 	"os/exec"
-	"path/filepath"
 	"testing"
 )
 
@@ -22,8 +21,8 @@ func TestGraphExamples(t *testing.T) {
 	for _, tt := range tests {
 		cmd := exec.Cmd{
 			Path: ghostdogBinaryPath,
-			Args: []string{ghostdogBinaryPath, "graph", "BUILD", "all"},
-			Dir:  filepath.Join(examplesDirectory, tt.exampleDirectory),
+			Args: []string{ghostdogBinaryPath, "graph", tt.exampleDirectory, "all"},
+			Dir:  examplesDirectory,
 		}
 
 		output, err := cmd.CombinedOutput()

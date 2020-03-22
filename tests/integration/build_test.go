@@ -34,7 +34,7 @@ func TestBuildExamples(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		cleanOutput, err := run(ghostdogBinaryPath, tempDir, filepath.Join(examplesDirectory, tt.exampleDirectory))
+		cleanOutput, err := run(ghostdogBinaryPath, tempDir, tt.exampleDirectory, examplesDirectory)
 		if err != nil {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cleanOutput)
 		}
@@ -43,7 +43,9 @@ func TestBuildExamples(t *testing.T) {
 			t.Errorf("expected no targetrs to be skipped on a clean run, but got %s", cleanOutput)
 		}
 
-		cacheOutput, err := run(ghostdogBinaryPath, tempDir, filepath.Join(examplesDirectory, tt.exampleDirectory))
+		// verify cache is used on sequential runs
+		// verify working directory and packagepath change doesn't use different cache
+		cacheOutput, err := run(ghostdogBinaryPath, tempDir, ".", filepath.Join(examplesDirectory, tt.exampleDirectory))
 		if err != nil {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cacheOutput)
 		}
@@ -76,10 +78,10 @@ func TestBuildExamples(t *testing.T) {
 	}
 }
 
-func run(ghostdogBinaryPath, cacheDirectory, workingDirectory string) (string, error) {
+func run(ghostdogBinaryPath, cacheDirectory, packagePath, workingDirectory string) (string, error) {
 	cmd := exec.Cmd{
 		Path: ghostdogBinaryPath,
-		Args: []string{ghostdogBinaryPath, "build", "--cache-directory", cacheDirectory, "BUILD", "all"},
+		Args: []string{ghostdogBinaryPath, "build", "--cache-directory", cacheDirectory, packagePath, "all"},
 		Dir:  workingDirectory,
 	}
 
