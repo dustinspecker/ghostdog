@@ -54,6 +54,7 @@ func (rule Rule) RunCommand() error {
 		}
 
 		cmd := exec.Command(splitCommand[0], splitCommand[1:]...)
+		cmd.Dir = rule.WorkingDirectory
 
 		if err := cmd.Start(); err != nil {
 			return err
