@@ -13,12 +13,13 @@ import (
 )
 
 type Rule struct {
-	Name     string
-	Commands []string
-	Sources  []string
-	Outputs  []string
-	Parents  []*Rule
-	Children []*Rule
+	Name             string
+	Commands         []string
+	Sources          []string
+	Outputs          []string
+	Parents          []*Rule
+	Children         []*Rule
+	WorkingDirectory string
 }
 
 func (rule Rule) GetHashDirectory(fs afero.Fs, cacheDirectory string) (string, error) {

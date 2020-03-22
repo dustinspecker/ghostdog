@@ -39,6 +39,10 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 	if publishRule.Children[0].Name != "test" {
 		t.Errorf("expected publish's children to have test, but had %v", publishRule.Children)
 	}
+
+	if publishRule.WorkingDirectory != "." {
+		t.Errorf("expected publish's WorkingDirectory to be ., but got %s", publishRule.WorkingDirectory)
+	}
 }
 
 func TestGetRulesReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {

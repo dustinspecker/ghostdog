@@ -2,6 +2,7 @@ package analyze
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/spf13/afero"
 	"go.starlark.net/starlark"
@@ -22,6 +23,7 @@ func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string
 	rulesDag := dag.NewDag()
 
 	addRule := func(rule rule.Rule) error {
+		rule.WorkingDirectory = filepath.Dir(buildFileName)
 
 		return rulesDag.AddRule(&rule)
 	}
