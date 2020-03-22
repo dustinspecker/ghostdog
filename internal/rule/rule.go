@@ -28,7 +28,7 @@ func (rule Rule) GetHashDirectory(fs afero.Fs, cacheDirectory string) (string, e
 		childrensOutputFilepaths = append(childrensOutputFilepaths, child.Outputs...)
 	}
 
-	childrensOutputFilepathsHash, err := hashing.GetHashForFiles(fs, childrensOutputFilepaths)
+	childrensOutputFilepathsHash, err := hashing.GetHashForFiles(fs, rule.WorkingDirectory, childrensOutputFilepaths)
 	if err != nil {
 		return "", err
 	}

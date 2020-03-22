@@ -67,13 +67,14 @@ func TestCopyFilePathsToDirectoryReturnsErrorWhenFilepathIsNotRegularFile(t *tes
 func TestCopyOutputsToRuleCache(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
-	if err := afero.WriteFile(fs, filepath.Join("some", "file"), []byte("hey"), 0644); err != nil {
+	if err := afero.WriteFile(fs, filepath.Join("working", "some", "file"), []byte("hey"), 0644); err != nil {
 		t.Fatalf("expected no error creating some/file, but got: %w", err)
 	}
 
 	rule := rule.Rule{
-		Commands: []string{"echo hey"},
-		Outputs:  []string{"some/file"},
+		Commands:         []string{"echo hey"},
+		Outputs:          []string{"some/file"},
+		WorkingDirectory: "working",
 	}
 
 	if err := CopyOutputsToRuleCache(fs, rule, "rule-cache"); err != nil {
@@ -122,8 +123,9 @@ func TestCopyRuleCacheToOutputs(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
 	rule := rule.Rule{
-		Commands: []string{"echo hey"},
-		Outputs:  []string{"dist/file"},
+		Commands:         []string{"echo hey"},
+		Outputs:          []string{"dist/file"},
+		WorkingDirectory: "workingdir",
 	}
 
 	if err := fs.MkdirAll(filepath.Join("rule-cache", "dist"), 0755); err != nil {
@@ -138,7 +140,7 @@ func TestCopyRuleCacheToOutputs(t *testing.T) {
 		t.Fatalf("expected no error calling CopyRuleCacheToOutputs: %w", err)
 	}
 
-	if _, err := fs.Stat(filepath.Join("dist", "file")); err != nil {
+	if _, err := fs.Stat(filepath.Join("workingdir", "dist", "file")); err != nil {
 		t.Errorf("expected dist/file to be created: %w", err)
 	}
 }

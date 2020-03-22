@@ -4,14 +4,15 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"io"
+	fpath "path/filepath"
 	"sort"
 	"strings"
 
 	"github.com/spf13/afero"
 )
 
-func getHashForFile(fs afero.Fs, filepath string) (string, error) {
-	file, err := fs.Open(filepath)
+func getHashForFile(fs afero.Fs, basepath, filepath string) (string, error) {
+	file, err := fs.Open(fpath.Join(basepath, filepath))
 	if err != nil {
 		return "", err
 	}
@@ -28,12 +29,12 @@ func getHashForFile(fs afero.Fs, filepath string) (string, error) {
 	return string(hash.Sum(nil)), nil
 }
 
-func GetHashForFiles(fs afero.Fs, filepaths []string) (string, error) {
+func GetHashForFiles(fs afero.Fs, basepath string, filepaths []string) (string, error) {
 	sort.Strings(filepaths)
 
 	hashes := []string{}
 	for _, filepath := range filepaths {
-		hash, err := getHashForFile(fs, filepath)
+		hash, err := getHashForFile(fs, basepath, filepath)
 		if err != nil {
 			return "", err
 		}

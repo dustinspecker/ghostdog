@@ -57,7 +57,7 @@ func CopyOutputsToRuleCache(fs afero.Fs, rule rule.Rule, ruleCacheDirectory stri
 	}
 
 	for _, output := range rule.Outputs {
-		if err := CopyFileToDestination(fs, output, filepath.Join(ruleCacheDirectory, output)); err != nil {
+		if err := CopyFileToDestination(fs, filepath.Join(rule.WorkingDirectory, output), filepath.Join(ruleCacheDirectory, output)); err != nil {
 			return err
 		}
 	}
@@ -72,7 +72,7 @@ func CopyRuleCacheToOutputs(fs afero.Fs, rule rule.Rule, ruleCacheDirectory stri
 	}
 
 	for _, output := range rule.Outputs {
-		if err := CopyFileToDestination(fs, filepath.Join(ruleCacheDirectory, output), output); err != nil {
+		if err := CopyFileToDestination(fs, filepath.Join(ruleCacheDirectory, output), filepath.Join(rule.WorkingDirectory, output)); err != nil {
 			return err
 		}
 	}
