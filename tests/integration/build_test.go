@@ -28,8 +28,8 @@ func TestBuildExamples(t *testing.T) {
 		expectedCacheDirectories []string
 	}{
 		{"single", []string{
-			filepath.Join("c2", "c2105ce261116cff50f017da316e16258be5cc7cf43b570bec37613492a129e2"),
-			filepath.Join("c8", "c8533a21c6b828664c56b37e96ee81121e1fd718cc72ddfca756ad2d6edd5bd6"),
+			filepath.Join("0f", "0f0963f849e1bd3b7197c29b66d59a531c1806e22f9d86478142d2917cd46038"),
+			filepath.Join("30", "308a5d09381b31966c398432ae1542f0b35564243c411dd2f4116b84452d5ef6"),
 		}},
 	}
 

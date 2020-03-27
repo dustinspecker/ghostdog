@@ -4,6 +4,6 @@ nothing:
 
 .PHONY: something
 something:
-	mkdir --parents dist
+	mkdir -p dist
 	echo "hey" > dist/something
 	exit 0
