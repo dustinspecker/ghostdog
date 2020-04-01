@@ -15,6 +15,7 @@
 ghostdog uses `BUILD` files written with [Starlark](https://github.com/bazelbuild/starlark) to understand how to build packages. An example `BUILD` file looks like:
 
 ```starlark
+# `files` functions are used to group files to later be used by `rule` function
 files(
   name = "makefile",
   paths = ["Makefile"]
@@ -25,11 +26,27 @@ files(
   paths = ["pkg/main.go"]
 )
 
+files(
+  name = "test_code",
+  paths = ["pkg/main_test.go"]
+)
+
+# this rule is only ran when the makefile or source_code files change
+# this rule runs `make build` and expects that command to output a file named main
 rule(
   name = "build",
   sources = ["makefile", "source_code"],
   commands = ["make build"],
   outputs = ["main"]
+)
+
+# this rule is only ran when the makefile or test_code files change, or when
+# the build rule's output changes
+rule(
+  name = "test",
+  sources = ["makefile", "test_code", "build"],
+  commands = ["make test"],
+  outputs = []
 )
 ```
 
