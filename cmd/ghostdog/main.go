@@ -1,10 +1,11 @@
 package main
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/apex/log"
+	apexCli "github.com/apex/log/handlers/cli"
 	"github.com/spf13/afero"
 	"github.com/urfave/cli/v2"
 
@@ -12,10 +13,31 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/graph"
 )
 
+func getLogCtx(logLevel string) (*log.Entry, error) {
+	parsedLogLevel, err := log.ParseLevel(logLevel)
+	if err != nil {
+		return nil, err
+	}
+
+	log.SetLevel(parsedLogLevel)
+	log.SetHandler(apexCli.New(os.Stderr))
+
+	logCtx := log.WithFields(log.Fields{
+		"app": "ghostdog",
+	})
+
+	return logCtx, nil
+}
+
 func main() {
+	logCtx, err := getLogCtx("error")
+	if err != nil {
+		panic(err)
+	}
+
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal(err)
+		logCtx.WithError(err).Fatal("getting home directory")
 	}
 
 	app := &cli.App{
@@ -63,6 +85,6 @@ func main() {
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		logCtx.WithError(err).Fatal("ran ghostdog")
 	}
 }
