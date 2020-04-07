@@ -122,8 +122,16 @@ func TestAddDependencyReturnsErrorWhenEdgeAlreadyExists(t *testing.T) {
 		t.Fatalf("expected no error adding child rule, but got %w", err)
 	}
 
+	if err := dag.AddRule(&rule.Rule{Name: "another_child"}); err != nil {
+		t.Fatalf("expected no error adding another_child rule, but got %w", err)
+	}
+
 	if err := dag.AddDependency("parent", "child"); err != nil {
 		t.Fatal("expected no error adding edge between parent and child")
+	}
+
+	if err := dag.AddDependency("parent", "another_child"); err != nil {
+		t.Fatal("expected no error adding edge between parent and another_child")
 	}
 
 	err := dag.AddDependency("parent", "child")

@@ -34,8 +34,8 @@ func (dag Dag) AddDependency(parentId, childId string) error {
 		return fmt.Errorf("%s: %w", childId, ErrRuleNotFound)
 	}
 
-	for _, child := range parent.Children {
-		if child == child {
+	for _, alreadyAddedChild := range parent.Children {
+		if child == alreadyAddedChild {
 			return fmt.Errorf("%s->%s: %w", parentId, childId, ErrEdgeAlreadyExists)
 		}
 	}
