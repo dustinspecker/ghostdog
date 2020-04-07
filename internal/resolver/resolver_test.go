@@ -14,8 +14,8 @@ func TestGetBuildInfoForPackage(t *testing.T) {
 		t.Fatalf("unexpected error while creating /home/ghostdog/foo directory: %w", err)
 	}
 
-	if err := afero.WriteFile(fs, "/home/ghostdog/foo/BUILD", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while creating /home/ghostdog/foo/BUILD: %w", err)
+	if err := afero.WriteFile(fs, "/home/ghostdog/foo/build.ghostdog", []byte(""), 0644); err != nil {
+		t.Fatalf("unexpected error while creating /home/ghostdog/foo/build.ghostdog: %w", err)
 	}
 
 	tests := []struct {
@@ -24,10 +24,10 @@ func TestGetBuildInfoForPackage(t *testing.T) {
 		expectedBuildFilePath string
 		expectedTargetRule    string
 	}{
-		{"/home/ghostdog", "foo", "/home/ghostdog/foo/BUILD", "all"},
-		{"/home/ghostdog", "foo:bar", "/home/ghostdog/foo/BUILD", "bar"},
-		{"/home/ghostdog/foo", ":bar", "/home/ghostdog/foo/BUILD", "bar"},
-		{"/home/ghostdog/foo", "", "/home/ghostdog/foo/BUILD", "all"},
+		{"/home/ghostdog", "foo", "/home/ghostdog/foo/build.ghostdog", "all"},
+		{"/home/ghostdog", "foo:bar", "/home/ghostdog/foo/build.ghostdog", "bar"},
+		{"/home/ghostdog/foo", ":bar", "/home/ghostdog/foo/build.ghostdog", "bar"},
+		{"/home/ghostdog/foo", "", "/home/ghostdog/foo/build.ghostdog", "all"},
 	}
 
 	for _, tt := range tests {
@@ -52,7 +52,7 @@ func TestGetBuildInfoForPackageReturnsErrorWhenNoBuildFileFound(t *testing.T) {
 		t.Fatal("expected an error for a build file that doesn't exit")
 	}
 
-	expectedMessage := "no BUILD file found in /cool/project/nope"
+	expectedMessage := "no build.ghostdog file found in /cool/project/nope"
 	if !strings.Contains(err.Error(), expectedMessage) {
 		t.Errorf("expected error messsage to contain %s, but got: %s", expectedMessage, err.Error())
 	}

@@ -53,7 +53,7 @@ func main() {
 		Commands: []*cli.Command{
 			{
 				Name:  "build",
-				Usage: "build projects using BUILD files",
+				Usage: "build projects using build.ghostdog files",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:    "cache-directory",
@@ -62,7 +62,7 @@ func main() {
 						EnvVars: []string{"XDG_CACHE_DIR"},
 					},
 				},
-				ArgsUsage: "BUILD_FILE TARGET_RULE",
+				ArgsUsage: "build.ghostdog_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
 					userLogCtx, err := getLogCtx(c.String("log-level"))
 					if err != nil {
@@ -87,7 +87,7 @@ func main() {
 			{
 				Name:      "graph",
 				Usage:     "create a graph (DOT) of the build dependencies",
-				ArgsUsage: "BUILD_FILE TARGET_RULE",
+				ArgsUsage: "build.ghostdog_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
 					userLogCtx, err := getLogCtx(c.String("log-level"))
 					if err != nil {

@@ -22,7 +22,7 @@ func GetBuildInfoForPackage(fs afero.Fs, cwd, target string) (string, string, er
 	}
 
 	buildFileDirectory := filepath.Join(cwd, packagePath)
-	buildFilePath := filepath.Join(buildFileDirectory, "BUILD")
+	buildFilePath := filepath.Join(buildFileDirectory, "build.ghostdog")
 
 	buildFileExists, err := afero.Exists(fs, buildFilePath)
 	if err != nil {
@@ -30,7 +30,7 @@ func GetBuildInfoForPackage(fs afero.Fs, cwd, target string) (string, string, er
 	}
 
 	if !buildFileExists {
-		return "", "", fmt.Errorf("no BUILD file found in %s", buildFileDirectory)
+		return "", "", fmt.Errorf("no build.ghostdog file found in %s", buildFileDirectory)
 	}
 
 	return buildFilePath, targetRule, nil

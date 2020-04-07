@@ -1,5 +1,5 @@
 # rule
-> The `rule` function is the meat of a `BUILD` file and informs Ghostdog what do.
+> The `rule` function is the meat of a `build.ghostdog` file and informs Ghostdog what do.
 
 `rule` functions explain what do to with files (and other `rule`s' output files) by listing commands to run. `rule` functions also list their expected output files. All of this information is used by Ghostdog to know what to run. More importantly, Ghostdog leverages this information to decide if it even needs to run anything! If Ghostdog detects that it has already ran the commands for same inputs, then it knows it can use the outputs it cached from a previous run!
 
@@ -14,7 +14,7 @@
 
 ## Example
 
-The `rule` function can be used at any place in a `BUILD` file. The order does not matter. And in fact the `rule` function may reference another `rule` before the `rule` is even defined.
+The `rule` function can be used at any place in a `build.ghostdog` file. The order does not matter. And in fact the `rule` function may reference another `rule` before the `rule` is even defined.
 
 ```python
 files(

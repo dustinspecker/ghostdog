@@ -14,11 +14,11 @@ func TestGetRules(t *testing.T) {
 rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
 	}
 
-	rules, err := GetRules(fs, "BUILD", "all")
+	rules, err := GetRules(fs, "build.ghostdog", "all")
 	if err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
@@ -46,13 +46,13 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 }
 
 func TestGetRulesReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
-	_, err := GetRules(afero.NewMemMapFs(), "BUILD", "all")
+	_, err := GetRules(afero.NewMemMapFs(), "build.ghostdog", "all")
 	if err == nil {
-		t.Fatal("expected an error when BUILD file doesn't exist")
+		t.Fatal("expected an error when build.ghostdog file doesn't exist")
 	}
 
-	if !strings.Contains(err.Error(), "BUILD") {
-		t.Errorf("expected message to contain BUILD, but got: %s", err.Error())
+	if !strings.Contains(err.Error(), "build.ghostdog") {
+		t.Errorf("expected message to contain build.ghostdog, but got: %s", err.Error())
 	}
 }
 
@@ -64,11 +64,11 @@ rule(name="build", sources=[], commands=["true"], outputs=[])
 rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 `
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %v", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	rules, err := GetRules(fs, "BUILD", "publish")
+	rules, err := GetRules(fs, "build.ghostdog", "publish")
 	if err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
@@ -87,13 +87,13 @@ func TestGetRulesReturnsErrorWhenItFailsToRunBuildFile(t *testing.T) {
 	data := `
 rule(invalid_args=1)
 `
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %v", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "BUILD", "all")
+	_, err := GetRules(fs, "build.ghostdog", "all")
 	if err == nil {
-		t.Error("should return error if failed to run BUILD file")
+		t.Error("should return error if failed to run build.ghostdog file")
 	}
 }
 
@@ -105,11 +105,11 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %v", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "BUILD", "all")
+	_, err := GetRules(fs, "build.ghostdog", "all")
 	if err == nil {
 		t.Error("should return error when duplicate rule name is found")
 	}
@@ -126,11 +126,11 @@ func TestGetRulesReturnsErrorWhenSourceDoesntExist(t *testing.T) {
 rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %v", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "BUILD", "all")
+	_, err := GetRules(fs, "build.ghostdog", "all")
 	if err == nil {
 		t.Error("should return error when rule name is not found")
 	}
@@ -149,11 +149,11 @@ rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %v", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "BUILD", "deploy")
+	_, err := GetRules(fs, "build.ghostdog", "deploy")
 	if err == nil {
 		t.Fatal("expected an error when target doesn't exist")
 	}

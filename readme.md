@@ -12,7 +12,7 @@
 
 ## Using ghostdog
 
-ghostdog uses `BUILD` files written with [Starlark](https://github.com/bazelbuild/starlark) to understand how to build packages. An example `BUILD` file looks like:
+ghostdog uses `build.ghostdog` files written with [Starlark](https://github.com/bazelbuild/starlark) to understand how to build packages. An example `build.ghostdog` file looks like:
 
 ```starlark
 # `files` functions are used to group files to later be used by `rule` function

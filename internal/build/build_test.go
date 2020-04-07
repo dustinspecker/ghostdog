@@ -21,8 +21,8 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
 	if err := RunBuildFile(testLogCtx, fs, ".", ".:all", "cache-dir"); err != nil {
@@ -38,8 +38,8 @@ rule(name="pass", sources=[], commands=["true"], outputs=[])
 rule(name="fail", sources=[], commands=["false"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
 	err := RunBuildFile(testLogCtx, fs, ".", ".:pass", "cache-dir")
@@ -50,7 +50,7 @@ rule(name="fail", sources=[], commands=["false"], outputs=[])
 
 func TestRunBuildFileReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
 	if err := RunBuildFile(testLogCtx, afero.NewMemMapFs(), ".", ".:all", "cache-dir"); err == nil {
-		t.Fatal("expected an error when BUILD file didn't exist")
+		t.Fatal("expected an error when build.ghostdog file didn't exist")
 	}
 }
 
@@ -61,8 +61,8 @@ func TestRunBuildFileReturnsErrorWhenFailToBuildRulesDag(t *testing.T) {
 doesnt_exist()
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
 	err := RunBuildFile(testLogCtx, fs, ".", ".:all", "cache-dir")
@@ -74,8 +74,8 @@ doesnt_exist()
 func TestRunBuildFileReturnsErrorWhenATargetDoesntExist(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(""), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
 	err := RunBuildFile(testLogCtx, fs, ".", ".:pass", "cache-dir")
@@ -95,8 +95,8 @@ func TestRunBuildFileReturnsErrorWhenACommandReturnsNonZeroExit(t *testing.T) {
 rule(name="test", sources=[], commands=["false"], outputs=[])
 `
 
-	if err := afero.WriteFile(fs, "BUILD", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing BUILD file: %w", err)
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
+		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
 	err := RunBuildFile(testLogCtx, fs, ".", ".:all", "cache-dir")

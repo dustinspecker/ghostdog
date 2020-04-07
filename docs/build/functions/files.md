@@ -12,7 +12,7 @@
 
 ## Example
 
-The `files` function can be used at any place in a `BUILD` file. The order does not matter. And in fact the `rule` function may reference a `files` rule before the `files` rule is even defined.
+The `files` function can be used at any place in a `build.ghostdog` file. The order does not matter. And in fact the `rule` function may reference a `files` rule before the `files` rule is even defined.
 
 ```python
 files(
