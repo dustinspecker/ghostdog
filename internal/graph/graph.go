@@ -43,12 +43,21 @@ func getDotGraph(rules map[string]*rule.Rule) string {
 	dagString := "digraph g {\n"
 
 	for _, rule := range rules {
-		for _, child := range rule.Children {
-			dagString = dagString + fmt.Sprintf("  \"%s\" -> \"%s\";\n", rule.Name, child.Name)
-		}
+		dagString = dagString + getEdges(rule)
 	}
 
 	dagString = dagString + "}"
 
 	return dagString
+}
+
+func getEdges(rule *rule.Rule) string {
+	edgesString := ""
+
+	for _, child := range rule.Children {
+		edgesString = edgesString + getEdges(child) + fmt.Sprintf("  \"%s\" -> \"%s\";\n", rule.Name, child.Name)
+
+	}
+
+	return edgesString
 }
