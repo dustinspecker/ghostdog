@@ -8,7 +8,7 @@ test-unit:
 
 .PHONY: test-integration
 test-integration: build
-	EXAMPLES_DIRECTORY=$(realpath ./examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/
+	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/
 
 .PHONY: test
 test: test-unit test-integration

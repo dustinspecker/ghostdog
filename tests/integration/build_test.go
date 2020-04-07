@@ -27,8 +27,8 @@ func TestBuildExamples(t *testing.T) {
 		// might be flakey as the go compiler isn't being pinnned...
 		// TODO: pin go compiler
 		{"go/simple", []string{
+			filepath.Join("96", "96ef90b6d7c29a9899fb0d6e0704b95b53bc2b528d8f3e6df49a8611eff0a2e2"),
 			filepath.Join("a1", "a1753190871b77e4c2ef833cabf68224edf51492b4ef25f4002057d8c87c5c77"),
-			filepath.Join("d3", "d310d82999db9f5249f5e9c48b5d3dc353aa3e1aecf6a45fd0b251da2f71f0c7"),
 		}},
 	}
 

@@ -50,4 +50,4 @@ rule(
 )
 ```
 
-More examples exist in the [examples directory](examples).
+More examples exist in the [_examples directory](_examples).
