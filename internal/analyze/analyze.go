@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/apex/log"
 	"github.com/spf13/afero"
 	"go.starlark.net/starlark"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string]*rule.Rule, error) {
+func GetRules(logCtx *log.Entry, fs afero.Fs, buildFileName string, buildTarget string) (map[string]*rule.Rule, error) {
 	buildFileData, err := fs.Open(buildFileName)
 	if err != nil {
 		return nil, err
@@ -23,6 +24,10 @@ func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string
 	rulesDag := dag.NewDag()
 
 	addRule := func(rule rule.Rule) error {
+		logCtx.WithFields(log.Fields{
+			"ruleName": rule.Name,
+		}).Info("adding rule")
+
 		rule.WorkingDirectory = filepath.Dir(buildFileName)
 
 		return rulesDag.AddRule(&rule)
@@ -40,6 +45,11 @@ func GetRules(fs afero.Fs, buildFileName string, buildTarget string) (map[string
 
 	for id, rule := range rulesDag.Rules {
 		for _, source := range rule.Sources {
+			logCtx.WithFields(log.Fields{
+				"parent": id,
+				"child":  source,
+			}).Info("adding rule dependency")
+
 			if err = rulesDag.AddDependency(id, source); err != nil {
 				return nil, err
 			}

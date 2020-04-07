@@ -26,7 +26,7 @@ func GetGraph(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, outputFil
 		"targetRule": targetRule,
 	}).Info("build info")
 
-	rules, err := analyze.GetRules(fs, buildFileName, targetRule)
+	rules, err := analyze.GetRules(logCtx, fs, buildFileName, targetRule)
 	if err != nil {
 		return err
 	}

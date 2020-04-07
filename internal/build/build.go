@@ -22,7 +22,7 @@ func RunBuildFile(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, cache
 		return err
 	}
 
-	rules, err := analyze.GetRules(fs, buildFileName, targetRule)
+	rules, err := analyze.GetRules(logCtx, fs, buildFileName, targetRule)
 	if err != nil {
 		return err
 	}

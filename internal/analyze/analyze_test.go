@@ -4,8 +4,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/apex/log"
 	"github.com/spf13/afero"
 )
+
+var testLogCtx = log.WithFields(log.Fields{
+	"testPath": "internal/analyze/analyze_test.go",
+})
 
 func TestGetRules(t *testing.T) {
 	fs := afero.NewMemMapFs()
@@ -18,7 +23,7 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
 	}
 
-	rules, err := GetRules(fs, "build.ghostdog", "all")
+	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
@@ -46,7 +51,7 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 }
 
 func TestGetRulesReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
-	_, err := GetRules(afero.NewMemMapFs(), "build.ghostdog", "all")
+	_, err := GetRules(testLogCtx, afero.NewMemMapFs(), "build.ghostdog", "all")
 	if err == nil {
 		t.Fatal("expected an error when build.ghostdog file doesn't exist")
 	}
@@ -68,7 +73,7 @@ rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	rules, err := GetRules(fs, "build.ghostdog", "publish")
+	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "publish")
 	if err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
@@ -91,7 +96,7 @@ rule(invalid_args=1)
 		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "build.ghostdog", "all")
+	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err == nil {
 		t.Error("should return error if failed to run build.ghostdog file")
 	}
@@ -109,7 +114,7 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "build.ghostdog", "all")
+	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err == nil {
 		t.Error("should return error when duplicate rule name is found")
 	}
@@ -130,7 +135,7 @@ rule(name="test", sources=["build"], commands=["echo hey"], outputs=[])
 		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "build.ghostdog", "all")
+	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err == nil {
 		t.Error("should return error when rule name is not found")
 	}
@@ -153,7 +158,7 @@ rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 		t.Fatalf("unexpected error while writing build.ghostdog file: %v", err)
 	}
 
-	_, err := GetRules(fs, "build.ghostdog", "deploy")
+	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "deploy")
 	if err == nil {
 		t.Fatal("expected an error when target doesn't exist")
 	}
