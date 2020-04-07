@@ -46,7 +46,7 @@ func TestBuildExamples(t *testing.T) {
 		}
 
 		if strings.Contains(cleanOutput, "skipping") {
-			t.Errorf("expected no targetrs to be skipped on a clean run, but got %s", cleanOutput)
+			t.Errorf("expected no targets to be skipped on a clean run, but got %s", cleanOutput)
 		}
 
 		// verify cache is used on sequential runs
