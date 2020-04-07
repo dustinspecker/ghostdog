@@ -1,0 +1,4 @@
+digraph g {
+  "nothing" -> "makefile";
+  "something" -> "makefile";
+}

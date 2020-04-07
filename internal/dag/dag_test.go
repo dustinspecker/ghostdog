@@ -170,9 +170,9 @@ func TestGetSources(t *testing.T) {
 
 	sources := dag.GetSources()
 
-	expectedSources := map[string]*rule.Rule{
-		"a": sourceA,
-		"b": sourceB,
+	expectedSources := []*rule.Rule{
+		sourceA,
+		sourceB,
 	}
 
 	if !reflect.DeepEqual(sources, expectedSources) {

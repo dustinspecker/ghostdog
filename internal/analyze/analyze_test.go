@@ -32,8 +32,8 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 		t.Fatalf("expected rules to only be source rules, but got: %v", rules)
 	}
 
-	publishRule, ok := rules["publish"]
-	if !ok {
+	publishRule := rules[0]
+	if publishRule.Name != "publish" {
 		t.Fatal("expected rulesDag to have a rule with publish id")
 	}
 
@@ -78,13 +78,15 @@ rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
 
-	if _, ok := rules["publish"]; !ok {
-		t.Fatalf("expected rules to have publish rule, but got: %v", rules)
-	}
-
 	if len(rules) != 1 {
 		t.Errorf("expected rules to only contain target rule, but got: %v", rules)
 	}
+
+	publishRule := rules[0]
+	if publishRule.Name != "publish" {
+		t.Fatalf("expected rules to have publish rule, but got: %v", rules)
+	}
+
 }
 func TestGetRulesReturnsErrorWhenItFailsToRunBuildFile(t *testing.T) {
 	fs := afero.NewMemMapFs()

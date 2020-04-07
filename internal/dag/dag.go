@@ -3,6 +3,7 @@ package dag
 import (
 	"errors"
 	"fmt"
+	"sort"
 
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
@@ -57,14 +58,16 @@ func (dag *Dag) AddRule(rule *rule.Rule) error {
 	return nil
 }
 
-func (dag Dag) GetSources() map[string]*rule.Rule {
-	sources := map[string]*rule.Rule{}
+func (dag Dag) GetSources() []*rule.Rule {
+	sources := []*rule.Rule{}
 
 	for _, rule := range dag.Rules {
 		if len(rule.Parents) == 0 {
-			sources[rule.Name] = rule
+			sources = append(sources, rule)
 		}
 	}
+
+	sort.Sort(rule.ByName(sources))
 
 	return sources
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func GetRules(logCtx *log.Entry, fs afero.Fs, buildFileName string, buildTarget string) (map[string]*rule.Rule, error) {
+func GetRules(logCtx *log.Entry, fs afero.Fs, buildFileName string, buildTarget string) ([]*rule.Rule, error) {
 	buildFileData, err := fs.Open(buildFileName)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func GetRules(logCtx *log.Entry, fs afero.Fs, buildFileName string, buildTarget 
 		return nil, fmt.Errorf("target %s not found", buildTarget)
 	}
 
-	return map[string]*rule.Rule{
-		buildTarget: rulesDag.Rules[buildTarget],
+	return []*rule.Rule{
+		rulesDag.Rules[buildTarget],
 	}, nil
 }

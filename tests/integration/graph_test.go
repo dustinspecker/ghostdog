@@ -5,7 +5,10 @@ package integration
 import (
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
+
+	"github.com/sebdah/goldie/v2"
 )
 
 func TestGraphExamples(t *testing.T) {
@@ -22,7 +25,7 @@ func TestGraphExamples(t *testing.T) {
 	for _, tt := range tests {
 		cmd := exec.Cmd{
 			Path: ghostdogBinaryPath,
-			Args: []string{ghostdogBinaryPath, "--log-level", "debug", "graph", tt.exampleDirectory + ":all"},
+			Args: []string{ghostdogBinaryPath, "graph", tt.exampleDirectory + ":all"},
 			Dir:  examplesDirectory,
 		}
 
@@ -30,6 +33,8 @@ func TestGraphExamples(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, string(output))
 		}
-		t.Log(string(output))
+
+		g := goldie.New(t, goldie.WithTestNameForDir(true))
+		g.Assert(t, strings.ReplaceAll(tt.exampleDirectory, "/", "_"), output)
 	}
 }

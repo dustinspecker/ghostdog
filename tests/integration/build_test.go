@@ -10,6 +10,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/sebdah/goldie/v2"
 )
 
 func TestBuildExamples(t *testing.T) {
@@ -45,9 +47,14 @@ func TestBuildExamples(t *testing.T) {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cleanOutput)
 		}
 
-		if strings.Contains(cleanOutput, "skipping") {
-			t.Errorf("expected no targets to be skipped on a clean run, but got %s", cleanOutput)
+		parsedCleanOutput := string(cleanOutput)
+
+		if strings.Contains(parsedCleanOutput, "skipping") {
+			t.Errorf("expected no targets to be skipped on a clean run, but got %s", parsedCleanOutput)
 		}
+
+		g := goldie.New(t, goldie.WithTestNameForDir(true))
+		g.Assert(t, strings.ReplaceAll(tt.exampleDirectory, "/", "_")+"-clean", cleanOutput)
 
 		// verify cache is used on sequential runs
 		// verify working directory and packagepath change doesn't use different cache
@@ -56,9 +63,12 @@ func TestBuildExamples(t *testing.T) {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cacheOutput)
 		}
 
-		if !strings.Contains(cacheOutput, "skipping") {
-			t.Errorf("expected some targets to be skipped on a cache run, but got %s", cacheOutput)
+		parsedCacheOutput := string(cacheOutput)
+		if !strings.Contains(parsedCacheOutput, "skipping") {
+			t.Errorf("expected some targets to be skipped on a cache run, but got %s", parsedCacheOutput)
 		}
+
+		g.Assert(t, strings.ReplaceAll(tt.exampleDirectory, "/", "_")+"-cache", cacheOutput)
 
 		baseCacheDirectory := filepath.Join(tempDir, "ghostdog")
 		dirNames := []string{}
@@ -84,14 +94,14 @@ func TestBuildExamples(t *testing.T) {
 	}
 }
 
-func run(ghostdogBinaryPath, cacheDirectory, packagePath, workingDirectory string) (string, error) {
+func run(ghostdogBinaryPath, cacheDirectory, packagePath, workingDirectory string) ([]byte, error) {
 	cmd := exec.Cmd{
 		Path: ghostdogBinaryPath,
-		Args: []string{ghostdogBinaryPath, "--log-level", "debug", "build", "--cache-directory", cacheDirectory, packagePath + ":all"},
+		Args: []string{ghostdogBinaryPath, "build", "--cache-directory", cacheDirectory, packagePath + ":all"},
 		Dir:  workingDirectory,
 	}
 
 	output, err := cmd.CombinedOutput()
 
-	return string(output), err
+	return output, err
 }
