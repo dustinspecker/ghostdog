@@ -9,7 +9,7 @@ import (
 
 var (
 	ErrAbsolutePath = errors.New("paths cannot contain an absolute file path")
-	ErrInvalidName  = errors.New("name must only contain lowercase letters or underscores")
+	ErrInvalidName  = errors.New("name must only contain lowercase letters, numbers, or underscores")
 	ErrParentPath   = errors.New("paths cannot depend on parent path (..)")
 	ErrReservedName = errors.New("name may not be a reserved name")
 )
@@ -33,7 +33,7 @@ func ValidateName(name string) error {
 		return ErrReservedName
 	}
 
-	re := regexp.MustCompile(`^[a-z_]*$`)
+	re := regexp.MustCompile(`^[a-z0-9_]*$`)
 
 	if re.MatchString(name) {
 		return nil

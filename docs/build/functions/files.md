@@ -7,7 +7,7 @@
 
 | Argument Name | Type | Usage | Required |
 | ------------- | ---- | ----- | -------- |
-| name          | String | This is the name that `rule` will use to reference this file group. Names may only use lowercase letters and underscores (regex used: ^[a-z\_]*$). | true |
+| name          | String | This is the name that `rule` will use to reference this file group. Names may only use lowercase letters, numbers, and underscores (regex used: ^[a-z0-9\_]*$). | true |
 | paths         | List of Strings | The filepaths to include in this files group. All paths **must** exist. Paths may **not** start with `/` (absolute paths). Path may **not** use `..` (reference parent directory). | true |
 
 ## Example

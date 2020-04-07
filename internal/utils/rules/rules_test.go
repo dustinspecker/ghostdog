@@ -53,7 +53,7 @@ func TestValidateNameReturnsErrorWhenNameIsAReservedName(t *testing.T) {
 }
 
 func TestValiidateNameReturnsErrorWhenInvalidNameFormat(t *testing.T) {
-	invalidNames := []string{"python37", "some name", "Name"}
+	invalidNames := []string{"some name", "Name"}
 	for _, invalidName := range invalidNames {
 		err := ValidateName(invalidName)
 		if err == nil {
@@ -65,7 +65,7 @@ func TestValiidateNameReturnsErrorWhenInvalidNameFormat(t *testing.T) {
 		}
 	}
 
-	validNames := []string{"python", "some_name"}
+	validNames := []string{"python", "some_name", "python37"}
 	for _, validName := range validNames {
 		err := ValidateName(validName)
 		if err != nil {

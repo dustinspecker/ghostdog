@@ -7,7 +7,7 @@
 
 | Argument Name | Type | Usage | Required |
 | ------------- | ---- | ----- | -------- |
-| name          | String | This is the name that `rule` that other rules may reference this `rule` by to depend on its outputs. Names may only use lowercase letters and underscores (regex used: ^[a-z\_]*$). | true |
+| name          | String | This is the name that `rule` that other rules may reference this `rule` by to depend on its outputs. Names may only use lowercase letters, numbers, and underscores (regex used: ^[a-z0-9\_]*$). | true |
 | sources | List of Strings | The name of the `rules` this `rule` depends on. Ghostdog won't run this `rule` until the `rules` in `sources` are all completed.| true |
 | commands | List of Strings | A list of commands to run as part of this `rule`. The commands are ran sequentially. If any command fails then the remaining commands are skipped. | true |
 | outputs | List of Strings | The list of filepaths that are created by this `rule`. It's okay to have zero outputs (must provide an empty list) as this sometimes makes sense like linting for example. | true |

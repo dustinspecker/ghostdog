@@ -73,7 +73,7 @@ func TestFilesReturnsErrorWhenNameIsInvalid(t *testing.T) {
 	thread := &starlark.Thread{}
 	builtin := &starlark.Builtin{}
 	args := []starlark.Value{
-		starlark.String("123rule_name"),
+		starlark.String("rule name"),
 		starlark.NewList([]starlark.Value{}),
 	}
 	kwargs := []starlark.Tuple{}

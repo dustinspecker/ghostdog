@@ -92,7 +92,7 @@ func TestRuleReturnsErrorWhenNameIsInvalid(t *testing.T) {
 	thread := &starlark.Thread{}
 	builtin := &starlark.Builtin{}
 	args := []starlark.Value{
-		starlark.String("123rule_name"),
+		starlark.String("Rule_name"),
 		starlark.NewList([]starlark.Value{}),
 		starlark.NewList([]starlark.Value{}),
 		starlark.NewList([]starlark.Value{}),
