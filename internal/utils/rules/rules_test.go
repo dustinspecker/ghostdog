@@ -52,13 +52,24 @@ func TestValidateNameReturnsErrorWhenNameIsAReservedName(t *testing.T) {
 	}
 }
 
-func TestValiidateNameReturnsErrorWhenNotLowercaseOrUnderscore(t *testing.T) {
-	err := ValidateName("python37")
-	if err == nil {
-		t.Fatal("ValidateName should return an error when invalid name")
+func TestValiidateNameReturnsErrorWhenInvalidNameFormat(t *testing.T) {
+	invalidNames := []string{"python37"}
+	for _, invalidName := range invalidNames {
+		err := ValidateName(invalidName)
+		if err == nil {
+			t.Fatalf("ValidateName should return an error when invalid name like %s", invalidName)
+		}
+
+		if !errors.Is(err, ErrInvalidName) {
+			t.Errorf("expected error to be %w, but got %w", ErrInvalidName, err)
+		}
 	}
 
-	if !errors.Is(err, ErrInvalidName) {
-		t.Errorf("expected error to be %w, but got %w", ErrInvalidName, err)
+	validNames := []string{"python"}
+	for _, validName := range validNames {
+		err := ValidateName(validName)
+		if err != nil {
+			t.Fatalf("ValidateName should not return an error when valid name like %s, but got: %w", validName, err)
+		}
 	}
 }
