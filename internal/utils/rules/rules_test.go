@@ -41,6 +41,17 @@ func TestValidateNameReturnNilWhenNoErrors(t *testing.T) {
 	}
 }
 
+func TestValidateNameReturnsErrorWhenNameIsAReservedName(t *testing.T) {
+	err := ValidateName("all")
+	if err == nil {
+		t.Fatal("ValidateName should return an error when using a reserved name")
+	}
+
+	if !errors.Is(err, ErrReservedName) {
+		t.Errorf("expected error to be %w, but got %w", ErrReservedName, err)
+	}
+}
+
 func TestValiidateNameReturnsErrorWhenNotLowercaseOrUnderscore(t *testing.T) {
 	err := ValidateName("python37")
 	if err == nil {

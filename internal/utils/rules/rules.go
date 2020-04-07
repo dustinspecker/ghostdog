@@ -11,6 +11,7 @@ var (
 	ErrAbsolutePath = errors.New("paths cannot contain an absolute file path")
 	ErrInvalidName  = errors.New("name must only contain lowercase letters or underscores")
 	ErrParentPath   = errors.New("paths cannot depend on parent path (..)")
+	ErrReservedName = errors.New("name may not be a reserved name")
 )
 
 func ValidatePaths(paths []string) error {
@@ -28,6 +29,10 @@ func ValidatePaths(paths []string) error {
 }
 
 func ValidateName(name string) error {
+	if isReservedName(name) {
+		return ErrReservedName
+	}
+
 	re := regexp.MustCompile(`^[a-z_]*$`)
 
 	if re.MatchString(name) {
@@ -35,4 +40,16 @@ func ValidateName(name string) error {
 	}
 
 	return ErrInvalidName
+}
+
+func isReservedName(name string) bool {
+	reservedNames := []string{"all"}
+
+	for _, reservedName := range reservedNames {
+		if name == reservedName {
+			return true
+		}
+	}
+
+	return false
 }
