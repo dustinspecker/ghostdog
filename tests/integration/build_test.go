@@ -81,7 +81,7 @@ func TestBuildExamples(t *testing.T) {
 func run(ghostdogBinaryPath, cacheDirectory, packagePath, workingDirectory string) (string, error) {
 	cmd := exec.Cmd{
 		Path: ghostdogBinaryPath,
-		Args: []string{ghostdogBinaryPath, "build", "--cache-directory", cacheDirectory, packagePath + ":all"},
+		Args: []string{ghostdogBinaryPath, "--log-level", "debug", "build", "--cache-directory", cacheDirectory, packagePath + ":all"},
 		Dir:  workingDirectory,
 	}
 

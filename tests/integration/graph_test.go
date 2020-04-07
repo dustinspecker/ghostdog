@@ -21,7 +21,7 @@ func TestGraphExamples(t *testing.T) {
 	for _, tt := range tests {
 		cmd := exec.Cmd{
 			Path: ghostdogBinaryPath,
-			Args: []string{ghostdogBinaryPath, "graph", tt.exampleDirectory + ":all"},
+			Args: []string{ghostdogBinaryPath, "--log-level", "debug", "graph", tt.exampleDirectory + ":all"},
 			Dir:  examplesDirectory,
 		}
 

@@ -43,6 +43,13 @@ func main() {
 	app := &cli.App{
 		Name:  "ghostdog",
 		Usage: "improve your build process",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "log-level",
+				Usage: "level of logs to write (debug, info, warn, error, fatal)",
+				Value: "error",
+			},
+		},
 		Commands: []*cli.Command{
 			{
 				Name:  "build",
@@ -57,6 +64,16 @@ func main() {
 				},
 				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
+					userLogCtx, err := getLogCtx(c.String("log-level"))
+					if err != nil {
+						log.WithFields(log.Fields{
+							"error": err.Error(),
+						}).Fatal("creating buildLogCtx")
+					}
+					buildLogCtx := userLogCtx.WithFields(log.Fields{
+						"subcommand": "build",
+					})
+
 					buildTarget := c.Args().Get(0)
 
 					cwd, err := os.Getwd()
@@ -64,7 +81,7 @@ func main() {
 						return err
 					}
 
-					return build.RunBuildFile(afero.NewOsFs(), cwd, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(buildLogCtx, afero.NewOsFs(), cwd, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 			{
@@ -72,13 +89,23 @@ func main() {
 				Usage:     "create a graph (DOT) of the build dependencies",
 				ArgsUsage: "BUILD_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
+					userLogCtx, err := getLogCtx(c.String("log-level"))
+					if err != nil {
+						log.WithFields(log.Fields{
+							"error": err.Error(),
+						}).Fatal("creating graphLogCtx")
+					}
+					graphLogCtx := userLogCtx.WithFields(log.Fields{
+						"subcommand": "graph",
+					})
+
 					buildTarget := c.Args().Get(0)
 
 					cwd, err := os.Getwd()
 					if err != nil {
 						return err
 					}
-					return graph.GetGraph(afero.NewOsFs(), cwd, buildTarget, os.Stdout)
+					return graph.GetGraph(graphLogCtx, afero.NewOsFs(), cwd, buildTarget, os.Stdout)
 				},
 			},
 		},

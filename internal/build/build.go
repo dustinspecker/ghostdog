@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/apex/log"
 	"github.com/spf13/afero"
 
 	"github.com/dustinspecker/ghostdog/internal/analyze"
@@ -12,9 +13,12 @@ import (
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(fs afero.Fs, cwd, buildTarget string, cacheDirectory string) error {
+func RunBuildFile(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, cacheDirectory string) error {
 	buildFileName, targetRule, err := resolver.GetBuildInfoForPackage(fs, cwd, buildTarget)
 	if err != nil {
+		logCtx.WithFields(log.Fields{
+			"error": err.Error(),
+		}).Error("getting build info")
 		return err
 	}
 
