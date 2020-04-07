@@ -24,6 +24,12 @@ func TestBuildExamples(t *testing.T) {
 			filepath.Join("0f", "0f0963f849e1bd3b7197c29b66d59a531c1806e22f9d86478142d2917cd46038"),
 			filepath.Join("30", "308a5d09381b31966c398432ae1542f0b35564243c411dd2f4116b84452d5ef6"),
 		}},
+		// might be flakey as the go compiler isn't being pinnned...
+		// TODO: pin go compiler
+		{"go/simple", []string{
+			filepath.Join("a1", "a1753190871b77e4c2ef833cabf68224edf51492b4ef25f4002057d8c87c5c77"),
+			filepath.Join("d3", "d310d82999db9f5249f5e9c48b5d3dc353aa3e1aecf6a45fd0b251da2f71f0c7"),
+		}},
 	}
 
 	for _, tt := range tests {

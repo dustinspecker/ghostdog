@@ -16,6 +16,7 @@ func TestGraphExamples(t *testing.T) {
 		exampleDirectory string
 	}{
 		{"single"},
+		{"go/simple"},
 	}
 
 	for _, tt := range tests {
