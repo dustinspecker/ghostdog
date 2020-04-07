@@ -1,6 +1,6 @@
 # ghostdog
 
-## Install ghostdog
+## Install ghostdog from source
 
 1. Install [Go](https://golang.org/dl/).
 1. Add `$GOPATH/bin` to `$PATH` via `export PATH=$(go env GOPATH)/bin:$PATH`.
