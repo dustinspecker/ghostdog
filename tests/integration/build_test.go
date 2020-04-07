@@ -16,13 +16,6 @@ func TestBuildExamples(t *testing.T) {
 	ghostdogBinaryPath := os.Getenv("GHOSTDOG_BINARY")
 	examplesDirectory := os.Getenv("EXAMPLES_DIRECTORY")
 
-	tempDir, err := ioutil.TempDir("", "ghostdog-cache")
-	if err != nil {
-		t.Fatalf("unexpected error while creating tempDir: %w", err)
-	}
-
-	t.Logf("using %s for cache directory", tempDir)
-
 	tests := []struct {
 		exampleDirectory         string
 		expectedCacheDirectories []string
@@ -34,6 +27,13 @@ func TestBuildExamples(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tempDir, err := ioutil.TempDir("", "ghostdog-cache")
+		if err != nil {
+			t.Fatalf("unexpected error while creating tempDir: %w", err)
+		}
+
+		t.Logf("using %s for cache directory", tempDir)
+
 		cleanOutput, err := run(ghostdogBinaryPath, tempDir, tt.exampleDirectory, examplesDirectory)
 		if err != nil {
 			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cleanOutput)
