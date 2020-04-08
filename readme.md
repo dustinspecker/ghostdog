@@ -53,3 +53,8 @@ rule(
 ```
 
 More examples exist in the [_examples directory](_examples).
+
+To understand the functions available in `build.ghostdog` files check the references in [docs/functions](docs/functions).
+
+Once a `build.ghostdog` file is created then ghostdog is able to build a project and graph a project's
+dependencies. For more information on ghostdog's commands consult the [docs/commands](docs/commands).
