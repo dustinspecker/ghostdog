@@ -1,7 +1,7 @@
 UPDATE_GOLDEN ?= false
 
 ifeq ($(UPDATE_GOLDEN), true)
-	_UPDATE_ARG="-update"
+	_update_arg="-update"
 endif
 
 .PHONY: build
@@ -14,7 +14,7 @@ test-unit:
 
 .PHONY: test-integration
 test-integration: build
-	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/ $(_UPDATE_ARG)
+	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/ $(_update_arg)
 
 .PHONY: test
 test: test-unit test-integration
