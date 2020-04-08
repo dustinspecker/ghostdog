@@ -129,16 +129,32 @@ func TestRunCommand(t *testing.T) {
 		Commands: []string{"echo hey"},
 	}
 
+	if rule.HasRan {
+		t.Error("expected rule to not be marked as ran")
+	}
+
 	if err := rule.RunCommand(); err != nil {
 		t.Error("expected rule to run command successfully")
+	}
+
+	if !rule.HasRan {
+		t.Error("expected rule to be marked as ran")
 	}
 }
 
 func TestRunCommandDoesNothingWhenNoCommandDefined(t *testing.T) {
 	rule := Rule{}
 
+	if rule.HasRan {
+		t.Error("expected rule to not be marked as ran")
+	}
+
 	if err := rule.RunCommand(); err != nil {
 		t.Error("expected RunCommand to do nothing if Command empty")
+	}
+
+	if !rule.HasRan {
+		t.Error("expected rule to be marked as ran even when no commands")
 	}
 }
 

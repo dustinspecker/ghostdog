@@ -28,7 +28,7 @@ func RunBuildFile(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, cache
 	}
 
 	for _, rule := range rules {
-		if err = run(fs, *rule, cacheDirectory); err != nil {
+		if err = run(fs, rule, cacheDirectory); err != nil {
 			return err
 		}
 	}
@@ -36,9 +36,13 @@ func RunBuildFile(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, cache
 	return nil
 }
 
-func run(fs afero.Fs, rule rule.Rule, cacheDirectory string) error {
+func run(fs afero.Fs, rule *rule.Rule, cacheDirectory string) error {
 	for _, child := range rule.Children {
-		run(fs, *child, cacheDirectory)
+		run(fs, child, cacheDirectory)
+	}
+
+	if rule.HasRan {
+		return nil
 	}
 
 	ruleCacheDirectory, err := rule.GetHashDirectory(fs, cacheDirectory)
@@ -50,7 +54,7 @@ func run(fs afero.Fs, rule rule.Rule, cacheDirectory string) error {
 	if err == nil {
 		fmt.Println("skipping", rule.Name)
 
-		return cache.CopyRuleCacheToOutputs(fs, rule, ruleCacheDirectory)
+		return cache.CopyRuleCacheToOutputs(fs, *rule, ruleCacheDirectory)
 	}
 
 	if !os.IsNotExist(err) {
@@ -62,5 +66,5 @@ func run(fs afero.Fs, rule rule.Rule, cacheDirectory string) error {
 		return err
 	}
 
-	return cache.CopyOutputsToRuleCache(fs, rule, ruleCacheDirectory)
+	return cache.CopyOutputsToRuleCache(fs, *rule, ruleCacheDirectory)
 }

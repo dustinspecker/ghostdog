@@ -20,6 +20,7 @@ type Rule struct {
 	Parents          []*Rule
 	Children         []*Rule
 	WorkingDirectory string
+	HasRan           bool
 }
 
 func (rule Rule) GetHashDirectory(fs afero.Fs, cacheDirectory string) (string, error) {
@@ -60,6 +61,8 @@ func (rule *Rule) RunCommand() error {
 			return fmt.Errorf("command \"%s\" failed: %w", command, err)
 		}
 	}
+
+	rule.HasRan = true
 
 	return nil
 }
