@@ -42,11 +42,7 @@ func (rule Rule) GetHashDirectory(fs afero.Fs, cacheDirectory string) (string, e
 	return filepath.Join(cacheDirectory, ruleHash[0:2], ruleHash), nil
 }
 
-func (rule Rule) RunCommand() error {
-	if !rule.shouldRunCommand() {
-		return nil
-	}
-
+func (rule *Rule) RunCommand() error {
 	for _, command := range rule.Commands {
 		splitCommand, err := shlex.Split(command)
 		if err != nil {
@@ -66,13 +62,4 @@ func (rule Rule) RunCommand() error {
 	}
 
 	return nil
-}
-
-func (rule Rule) shouldRunCommand() bool {
-	// only File rules should have no command
-	if len(rule.Commands) == 0 {
-		return false
-	}
-
-	return true
 }
