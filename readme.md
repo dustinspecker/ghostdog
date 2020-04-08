@@ -1,5 +1,7 @@
 # ghostdog
 
+> ghostdog is a language-and-tool-agnostic build tool to only build what's changed
+
 ## Install ghostdog from source
 
 1. Install [Go](https://golang.org/dl/).
