@@ -1,3 +1,9 @@
+UPDATE_GOLDEN ?= false
+
+ifeq ($(UPDATE_GOLDEN), true)
+	_UPDATE_ARG="-update"
+endif
+
 .PHONY: build
 build:
 	go build -o bin/ghostdog cmd/ghostdog/main.go
@@ -8,11 +14,7 @@ test-unit:
 
 .PHONY: test-integration
 test-integration: build
-	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/
-
-.PHONY: update-golden-files
-update-golden-files:
-	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/ -update
+	EXAMPLES_DIRECTORY=$(realpath ./_examples/) GHOSTDOG_BINARY=$(realpath ./bin/ghostdog) go test -tags=integration ./tests/integration/ $(_UPDATE_ARG)
 
 .PHONY: test
 test: test-unit test-integration
