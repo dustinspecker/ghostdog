@@ -1,4 +1,4 @@
-# ghostdog
+# :ghost: ghostdog :dog:
 
 > ghostdog is a language-and-tool-agnostic build tool to only build what's changed
 
