@@ -53,13 +53,22 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 func TestGetRulesSupportsStarlarksLoad(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
-	if err := fs.MkdirAll("libs", 0755); err != nil {
-		t.Fatalf("unexpected while creating libs directory: %w", err)
+	if err := fs.MkdirAll("libs/function", 0755); err != nil {
+		t.Fatalf("unexpected while creating libs/function directory: %w", err)
+	}
+
+	constantsData := `
+MAKEFILE_NAME = "Makefile"
+`
+	if err := afero.WriteFile(fs, "libs/constants.ghostdog", []byte(constantsData), 0644); err != nil {
+		t.Fatalf("unexpected error writing libs/constants.ghostdog file: %w", err)
 	}
 
 	libData := `
+load("constants.ghostdog", "MAKEFILE_NAME")
+
 def test():
-  files(name="make", paths=["Makefile"])
+  files(name="make", paths=[MAKEFILE_NAME])
   rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 `
 	if err := afero.WriteFile(fs, "libs/test.ghostdog", []byte(libData), 0644); err != nil {
@@ -76,7 +85,7 @@ test()
 
 	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err != nil {
-		t.Fatalf("expected `load` function to work: %w", err)
+		t.Fatalf("expected `load` function to work and load modules relative to moduel calling load: %w", err)
 	}
 
 	if len(rules) != 2 {

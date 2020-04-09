@@ -38,19 +38,22 @@ func GetRules(logCtx *log.Entry, fs afero.Fs, buildFileName string, buildTarget 
 		"rule":  starlark.NewBuiltin("rule", builtins.Rule(addRule)),
 	}
 
-	var load func(thread *starlark.Thread, module string) (starlark.StringDict, error)
-	load = func(thread *starlark.Thread, module string) (starlark.StringDict, error) {
-		moduleData, err := fs.Open(filepath.Join(workingDirectory, module))
-		if err != nil {
-			return nil, err
+	var load func(directoryOfModuleCallingLoad string) func(thread *starlark.Thread, module string) (starlark.StringDict, error)
+	load = func(directoryOfModuleCallingLoad string) func(thread *starlark.Thread, module string) (starlark.StringDict, error) {
+		return func(thread *starlark.Thread, module string) (starlark.StringDict, error) {
+			moduleFilePath := filepath.Join(directoryOfModuleCallingLoad, module)
+			moduleData, err := fs.Open(moduleFilePath)
+			if err != nil {
+				return nil, err
+			}
+
+			loadThread := &starlark.Thread{Name: "load-" + module, Load: load(filepath.Dir(moduleFilePath))}
+
+			return starlark.ExecFile(loadThread, module, moduleData, nativeFunctions)
 		}
-
-		loadThread := &starlark.Thread{Name: "load-" + module, Load: load}
-
-		return starlark.ExecFile(loadThread, module, moduleData, nativeFunctions)
 	}
 
-	thread := &starlark.Thread{Name: "ghostdog-main", Load: load}
+	thread := &starlark.Thread{Name: "ghostdog-main", Load: load(workingDirectory)}
 
 	_, err = starlark.ExecFile(thread, buildFileName, buildFileData, nativeFunctions)
 	if err != nil {
