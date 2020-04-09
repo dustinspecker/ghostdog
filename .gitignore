@@ -1,4 +1,4 @@
 bin
 cover.out
 _examples/**/dist
-_examples/go/simple/main
+_examples/simple-go/main
