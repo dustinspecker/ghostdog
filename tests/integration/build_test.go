@@ -20,7 +20,7 @@ func TestBuildExamples(t *testing.T) {
 	tests := []struct {
 		exampleDirectory string
 	}{
-		{"single"},
+		{"hello-world"},
 		// might be flakey as the go compiler isn't being pinnned...
 		// TODO: pin go compiler
 		{"simple-go"},

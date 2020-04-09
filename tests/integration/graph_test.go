@@ -18,7 +18,7 @@ func TestGraphExamples(t *testing.T) {
 	tests := []struct {
 		exampleDirectory string
 	}{
-		{"single"},
+		{"hello-world"},
 		{"simple-go"},
 	}
 
