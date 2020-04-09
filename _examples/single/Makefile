@@ -5,5 +5,5 @@ nothing:
 .PHONY: something
 something:
 	mkdir -p dist
-	echo "hey" > dist/something
+	echo "hello world" > dist/something
 	exit 0
