@@ -6,6 +6,11 @@
 - `make` is installed (optional, but recommended)
 - [`go`](https://golang.org/dl/) is installed
 
+## Project structure
+
+ghostdog follows [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
+as much as possible.
+
 ## Building
 
 ghostdog is written in go and thus requires go to build. This repository
