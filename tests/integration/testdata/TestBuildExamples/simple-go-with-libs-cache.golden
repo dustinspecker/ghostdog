@@ -1,0 +1,6 @@
+running makefile_for_test
+running test_code
+running makefile_for_build
+running source_code
+skipping make_build
+skipping make_test

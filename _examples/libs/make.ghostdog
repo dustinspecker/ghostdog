@@ -1,0 +1,21 @@
+# an example ghostdog library that may be loaded in build.ghostdog
+
+# make function adds a files and rules
+#
+# @param target (str) - the make target to run
+# @param sources ([]str) - other rules and files to depend on
+# @param outputs ([]str) - outputs created by the make target
+def make(target, sources = [], outputs = []):
+  makefile_source_name = "makefile_for_" + target
+
+  files(
+    name = makefile_source_name,
+    paths = ["Makefile"],
+  )
+
+  rule(
+    name = "make_" + target,
+    sources = [makefile_source_name] + sources,
+    commands = ["make " + target],
+    outputs = outputs
+  )

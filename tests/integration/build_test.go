@@ -24,6 +24,7 @@ func TestBuildExamples(t *testing.T) {
 		// might be flakey as the go compiler isn't being pinnned...
 		// TODO: pin go compiler
 		{"simple-go"},
+		{"simple-go-with-libs"},
 	}
 
 	for _, tt := range tests {

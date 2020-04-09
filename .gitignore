@@ -2,3 +2,4 @@ bin
 cover.out
 _examples/**/dist
 _examples/simple-go/main
+_examples/simple-go-with-libs/main

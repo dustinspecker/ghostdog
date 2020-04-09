@@ -1,0 +1,17 @@
+# load make function
+load("../libs/make.ghostdog", "make")
+
+files(
+  name = "source_code",
+  paths = ["pkg/main.go"]
+)
+
+files(
+  name = "test_code",
+  paths = ["pkg/main_test.go"]
+)
+
+make("build", ["source_code"], ["main"])
+
+# this is kind of gross, "make_build" is created by the above func call
+make("test", ["test_code", "make_build"])

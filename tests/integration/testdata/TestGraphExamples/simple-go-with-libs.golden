@@ -1,0 +1,7 @@
+digraph g {
+  "make_build" -> "makefile_for_build";
+  "make_build" -> "source_code";
+  "make_test" -> "make_build";
+  "make_test" -> "makefile_for_test";
+  "make_test" -> "test_code";
+}

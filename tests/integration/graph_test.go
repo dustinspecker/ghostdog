@@ -20,6 +20,7 @@ func TestGraphExamples(t *testing.T) {
 	}{
 		{"hello-world"},
 		{"simple-go"},
+		{"simple-go-with-libs"},
 	}
 
 	for _, tt := range tests {

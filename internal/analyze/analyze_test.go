@@ -50,6 +50,60 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 	}
 }
 
+func TestGetRulesSupportsStarlarksLoad(t *testing.T) {
+	fs := afero.NewMemMapFs()
+
+	if err := fs.MkdirAll("libs", 0755); err != nil {
+		t.Fatalf("unexpected while creating libs directory: %w", err)
+	}
+
+	libData := `
+def test():
+  files(name="make", paths=["Makefile"])
+  rule(name="test", sources=[], commands=["echo hey"], outputs=[])
+`
+	if err := afero.WriteFile(fs, "libs/test.ghostdog", []byte(libData), 0644); err != nil {
+		t.Fatalf("unexpected error writing libs/test.ghostdog file: %w", err)
+	}
+
+	buildData := `
+load("libs/test.ghostdog", "test")
+test()
+`
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(buildData), 0644); err != nil {
+		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
+	}
+
+	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
+	if err != nil {
+		t.Fatalf("expected `load` function to work: %w", err)
+	}
+
+	if len(rules) != 2 {
+		t.Fatalf("expected only 2 rules to be created from libs/test.ghostdog's test(): %v", rules)
+	}
+}
+
+func TestGetRulesReturnsErrorWhenLoadFunctionCalledOnNonexistentFile(t *testing.T) {
+	fs := afero.NewMemMapFs()
+
+	buildData := `
+load("libs/test.ghostdog", "test")
+`
+	if err := afero.WriteFile(fs, "build.ghostdog", []byte(buildData), 0644); err != nil {
+		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
+	}
+
+	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
+	if err == nil {
+		t.Fatal("expected `load` function to return error when file not found")
+	}
+
+	if !strings.Contains(err.Error(), "cannot load libs/test.ghostdog") {
+		t.Error("expected error message to contain, but got: %w", err)
+	}
+}
+
 func TestGetRulesReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
 	_, err := GetRules(testLogCtx, afero.NewMemMapFs(), "build.ghostdog", "all")
 	if err == nil {
