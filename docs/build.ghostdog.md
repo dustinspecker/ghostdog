@@ -40,3 +40,8 @@ Just like `files` a `rule` can depend on a bunch and define a bunch of commands.
 be. There could exist a single `rule` to build, run unit tests, and run integration tests. But that means all of these will always be ran when
 anything changes. When in reality if only a unit test changed then there's no reason to have to build or run integration tests. So define granular
 rules and let ghostdog be lazy.
+
+## load
+
+The Starlark language offers the ability to implement a `load` function. Just so happens ghostdog does implement a `load` function to enable
+easy code re-use between projects. More information may be read in [functions/load.md](functions/load.md).
