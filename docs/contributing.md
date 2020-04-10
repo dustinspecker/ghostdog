@@ -5,6 +5,8 @@
 - Linux or macOS
 - `make` is installed (optional, but recommended)
 - [`go`](https://golang.org/dl/) is installed
+- [docker](https://www.docker.com/) is installed
+  - docker is required for running integration tests
 
 ## Project structure
 
