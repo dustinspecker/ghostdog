@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := test
+
 UPDATE_GOLDEN ?= false
 
 ifeq ($(UPDATE_GOLDEN), true)
