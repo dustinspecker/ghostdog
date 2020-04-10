@@ -2,6 +2,8 @@
 
 > ghostdog is a language-and-tool-agnostic build tool to only build what's changed
 
+[![Build Status](https://travis-ci.org/dustinspecker/ghostdog.svg?branch=master)](https://travis-ci.org/dustinspecker/ghostdog)
+
 ## Install ghostdog from source
 
 1. Install [Go](https://golang.org/dl/).
