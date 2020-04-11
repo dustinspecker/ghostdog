@@ -184,7 +184,7 @@ func TestRunCommandReturnsErrorWhenCommandReturnsNonZeroExitCode(t *testing.T) {
 	}
 
 	expectedOutputMessage := "output: usage"
-	if !strings.Contains(err.Error(), expectedOutputMessage) {
+	if !strings.Contains(strings.ToLower(err.Error()), expectedOutputMessage) {
 		t.Errorf("expected error message to contain %s, but got: %s", expectedOutputMessage, err.Error())
 	}
 }
