@@ -177,4 +177,9 @@ func TestRunCommandReturnsErrorWhenCommandReturnsNonZeroExitCode(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expected command to fail")
 	}
+
+	expectedMessage := "command \"false\" failed:"
+	if !strings.Contains(err.Error(), expectedMessage) {
+		t.Errorf("expected error message to have %s, but got: %s", expectedMessage, err.Error())
+	}
 }
