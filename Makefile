@@ -12,7 +12,7 @@ build:
 
 .PHONY: test-unit
 test-unit:
-	go test ./... -cover -coverprofile=cover.out
+	go test ./... -cover -coverprofile=cover.out -covermode=count
 
 .PHONY: test-integration
 test-integration: build
