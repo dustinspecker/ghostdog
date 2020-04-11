@@ -11,7 +11,9 @@ is the same list of files passed in via the `paths` argument.
 Second, `rule`s have two components to caching. First, a rule's cache directory is created by creating a hash.
 That hash is created from:
 
-- the file contents of all outputs of all `rule`s a rule depends on (the `sources` argument)
+- the file contents of all outputs of all `rule`s and `files` a rule depends on (the `sources` argument)
+  - this is where `files` comes in - ghostdog uses `files` to build hashes and never needs to cache file content
+  of `paths` passed to `files`
 - the rule's commands
 - the rule's outputs' filenames
 
