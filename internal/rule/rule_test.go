@@ -170,7 +170,7 @@ func TestRunCommandReturnsErrorWhenCommandFailsToBeParsed(t *testing.T) {
 
 func TestRunCommandReturnsErrorWhenCommandReturnsNonZeroExitCode(t *testing.T) {
 	rule := Rule{
-		Commands: []string{"false"},
+		Commands: []string{"grep"},
 	}
 
 	err := rule.RunCommand()
@@ -178,8 +178,13 @@ func TestRunCommandReturnsErrorWhenCommandReturnsNonZeroExitCode(t *testing.T) {
 		t.Fatalf("expected command to fail")
 	}
 
-	expectedMessage := "command \"false\" failed:"
+	expectedMessage := "command \"grep\" failed:"
 	if !strings.Contains(err.Error(), expectedMessage) {
 		t.Errorf("expected error message to have %s, but got: %s", expectedMessage, err.Error())
+	}
+
+	expectedOutputMessage := "output: usage"
+	if !strings.Contains(err.Error(), expectedOutputMessage) {
+		t.Errorf("expected error message to contain %s, but got: %s", expectedOutputMessage, err.Error())
 	}
 }

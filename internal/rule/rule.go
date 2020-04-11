@@ -53,12 +53,10 @@ func (rule *Rule) RunCommand() error {
 		cmd := exec.Command(splitCommand[0], splitCommand[1:]...)
 		cmd.Dir = rule.WorkingDirectory
 
-		if err := cmd.Start(); err != nil {
-			return err
-		}
+		output, err := cmd.CombinedOutput()
 
-		if err := cmd.Wait(); err != nil {
-			return fmt.Errorf("command \"%s\" failed: %w", command, err)
+		if err != nil {
+			return fmt.Errorf("command \"%s\" failed: %w output: %s", command, err, output)
 		}
 	}
 
