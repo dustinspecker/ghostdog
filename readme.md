@@ -3,6 +3,7 @@
 > ghostdog is a language-and-tool-agnostic build tool to only build what's changed
 
 [![Build Status](https://travis-ci.org/dustinspecker/ghostdog.svg?branch=master)](https://travis-ci.org/dustinspecker/ghostdog)
+[![codecov](https://codecov.io/gh/dustinspecker/ghostdog/branch/master/graph/badge.svg)](https://codecov.io/gh/dustinspecker/ghostdog)
 
 ## Install ghostdog from source
 
