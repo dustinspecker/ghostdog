@@ -5,39 +5,22 @@ import (
 	"path/filepath"
 
 	"github.com/apex/log"
-	apexCli "github.com/apex/log/handlers/cli"
-	"github.com/spf13/afero"
 	"github.com/urfave/cli/v2"
 
 	"github.com/dustinspecker/ghostdog/internal/build"
+	"github.com/dustinspecker/ghostdog/internal/config"
 	"github.com/dustinspecker/ghostdog/internal/graph"
 )
 
-func getLogCtx(logLevel string) (*log.Entry, error) {
-	parsedLogLevel, err := log.ParseLevel(logLevel)
-	if err != nil {
-		return nil, err
-	}
-
-	log.SetLevel(parsedLogLevel)
-	log.SetHandler(apexCli.New(os.Stderr))
-
-	logCtx := log.WithFields(log.Fields{
-		"app": "ghostdog",
-	})
-
-	return logCtx, nil
-}
-
 func main() {
-	logCtx, err := getLogCtx("error")
+	appConfig, err := config.New("error")
 	if err != nil {
 		panic(err)
 	}
 
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		logCtx.WithError(err).Fatal("getting home directory")
+		appConfig.LogCtx.WithError(err).Fatal("getting home directory")
 	}
 
 	app := &cli.App{
@@ -64,24 +47,19 @@ func main() {
 				},
 				ArgsUsage: "build.ghostdog_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
-					userLogCtx, err := getLogCtx(c.String("log-level"))
+					userConfig, err := config.New(c.String("log-level"))
 					if err != nil {
-						log.WithFields(log.Fields{
+						appConfig.LogCtx.WithFields(log.Fields{
 							"error": err.Error(),
-						}).Fatal("creating buildLogCtx")
+						}).Fatal("creating userConfig")
 					}
-					buildLogCtx := userLogCtx.WithFields(log.Fields{
+					userConfig.LogCtx = userConfig.LogCtx.WithFields(log.Fields{
 						"subcommand": "build",
 					})
 
 					buildTarget := c.Args().Get(0)
 
-					cwd, err := os.Getwd()
-					if err != nil {
-						return err
-					}
-
-					return build.RunBuildFile(buildLogCtx, afero.NewOsFs(), cwd, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(userConfig.LogCtx, userConfig.Fs, userConfig.WorkingDirectory, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 			{
@@ -89,29 +67,25 @@ func main() {
 				Usage:     "create a graph (DOT) of the build dependencies",
 				ArgsUsage: "build.ghostdog_FILE TARGET_RULE",
 				Action: func(c *cli.Context) error {
-					userLogCtx, err := getLogCtx(c.String("log-level"))
+					userConfig, err := config.New(c.String("log-level"))
 					if err != nil {
-						log.WithFields(log.Fields{
+						appConfig.LogCtx.WithFields(log.Fields{
 							"error": err.Error(),
-						}).Fatal("creating graphLogCtx")
+						}).Fatal("creating userConfig")
 					}
-					graphLogCtx := userLogCtx.WithFields(log.Fields{
+					userConfig.LogCtx = userConfig.LogCtx.WithFields(log.Fields{
 						"subcommand": "graph",
 					})
 
 					buildTarget := c.Args().Get(0)
 
-					cwd, err := os.Getwd()
-					if err != nil {
-						return err
-					}
-					return graph.GetGraph(graphLogCtx, afero.NewOsFs(), cwd, buildTarget, os.Stdout)
+					return graph.GetGraph(userConfig.LogCtx, userConfig.Fs, userConfig.WorkingDirectory, buildTarget, os.Stdout)
 				},
 			},
 		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		logCtx.WithError(err).Fatal("ran ghostdog")
+		appConfig.LogCtx.WithError(err).Fatal("ran ghostdog")
 	}
 }
