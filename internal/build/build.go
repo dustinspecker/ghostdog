@@ -9,26 +9,27 @@ import (
 
 	"github.com/dustinspecker/ghostdog/internal/analyze"
 	"github.com/dustinspecker/ghostdog/internal/cache"
+	"github.com/dustinspecker/ghostdog/internal/config"
 	"github.com/dustinspecker/ghostdog/internal/resolver"
 	"github.com/dustinspecker/ghostdog/internal/rule"
 )
 
-func RunBuildFile(logCtx *log.Entry, fs afero.Fs, cwd, buildTarget string, cacheDirectory string) error {
-	buildFileName, targetRule, err := resolver.GetBuildInfoForPackage(fs, cwd, buildTarget)
+func RunBuildFile(config config.Config, buildTarget string, cacheDirectory string) error {
+	buildFileName, targetRule, err := resolver.GetBuildInfoForPackage(config.Fs, config.WorkingDirectory, buildTarget)
 	if err != nil {
-		logCtx.WithFields(log.Fields{
+		config.LogCtx.WithFields(log.Fields{
 			"error": err.Error(),
 		}).Error("getting build info")
 		return err
 	}
 
-	rules, err := analyze.GetRules(logCtx, fs, buildFileName, targetRule)
+	rules, err := analyze.GetRules(config.LogCtx, config.Fs, buildFileName, targetRule)
 	if err != nil {
 		return err
 	}
 
 	for _, rule := range rules {
-		if err = run(fs, rule, cacheDirectory); err != nil {
+		if err = run(config.Fs, rule, cacheDirectory); err != nil {
 			return err
 		}
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
+	"github.com/apex/log/handlers/memory"
 	"github.com/spf13/afero"
 )
 
@@ -42,4 +43,19 @@ func New(logLevel string) (Config, error) {
 		LogCtx:           logCtx,
 		WorkingDirectory: cwd,
 	}, nil
+}
+
+func NewTest() Config {
+	log.SetLevel(log.DebugLevel)
+	log.SetHandler(memory.New())
+
+	logCtx := log.WithFields(log.Fields{
+		"app": "ghostdog-test",
+	})
+
+	return Config{
+		Fs:               afero.NewMemMapFs(),
+		LogCtx:           logCtx,
+		WorkingDirectory: ".",
+	}
 }

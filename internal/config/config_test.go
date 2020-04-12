@@ -27,3 +27,15 @@ func TestNewReturnsErrorWhenLogLevelParseFails(t *testing.T) {
 		t.Fatal("expected an error trying to parse a log level of dustin")
 	}
 }
+
+func TestNewTest(t *testing.T) {
+	config := NewTest()
+
+	if config.Fs.Name() != "MemMapFS" {
+		t.Errorf("expected fs to be MemMapFS, but got %s", config.Fs.Name())
+	}
+
+	if config.LogCtx.Level != log.DebugLevel {
+		t.Errorf("expected log level to be debug, but got %s", config.LogCtx.Level)
+	}
+}

@@ -59,7 +59,7 @@ func main() {
 
 					buildTarget := c.Args().Get(0)
 
-					return build.RunBuildFile(userConfig.LogCtx, userConfig.Fs, userConfig.WorkingDirectory, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
+					return build.RunBuildFile(userConfig, buildTarget, filepath.Join(c.String("cache-directory"), "ghostdog"))
 				},
 			},
 			{
@@ -79,7 +79,7 @@ func main() {
 
 					buildTarget := c.Args().Get(0)
 
-					return graph.GetGraph(userConfig.LogCtx, userConfig.Fs, userConfig.WorkingDirectory, buildTarget, os.Stdout)
+					return graph.GetGraph(userConfig, buildTarget, os.Stdout)
 				},
 			},
 		},
