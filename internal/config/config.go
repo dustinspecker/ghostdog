@@ -15,6 +15,10 @@ type Config struct {
 	WorkingDirectory string
 }
 
+type TestConfig struct {
+	Config Config
+}
+
 func New(logLevel string) (Config, error) {
 	// TODO: how to test working directory
 	// TODO: how to test when os.Getwd returns an error
@@ -45,7 +49,7 @@ func New(logLevel string) (Config, error) {
 	}, nil
 }
 
-func NewTest() Config {
+func NewTest() TestConfig {
 	log.SetLevel(log.DebugLevel)
 	log.SetHandler(memory.New())
 
@@ -53,9 +57,11 @@ func NewTest() Config {
 		"app": "ghostdog-test",
 	})
 
-	return Config{
-		Fs:               afero.NewMemMapFs(),
-		LogCtx:           logCtx,
-		WorkingDirectory: ".",
+	return TestConfig{
+		Config: Config{
+			Fs:               afero.NewMemMapFs(),
+			LogCtx:           logCtx,
+			WorkingDirectory: ".",
+		},
 	}
 }
