@@ -10,7 +10,7 @@ import (
 )
 
 func TestRunBuildFileDefinesRuleFunction(t *testing.T) {
-	config := config.NewTest()
+	testConfig := config.NewTest()
 
 	data := `
 print('hello')
@@ -18,28 +18,28 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
 
-	if err := afero.WriteFile(config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
+	if err := afero.WriteFile(testConfig.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
 		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
-	if err := RunBuildFile(config, ".:all", "cache-dir"); err != nil {
+	if err := RunBuildFile(testConfig, ".:all", "cache-dir"); err != nil {
 		t.Fatalf("expected `rule` function to work: %w", err)
 	}
 }
 
 func TestRunBuildFileRunsSpecificTargetWhenNotAll(t *testing.T) {
-	config := config.NewTest()
+	testConfig := config.NewTest()
 
 	data := `
 rule(name="pass", sources=[], commands=["true"], outputs=[])
 rule(name="fail", sources=[], commands=["false"], outputs=[])
 `
 
-	if err := afero.WriteFile(config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
+	if err := afero.WriteFile(testConfig.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
 		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
-	err := RunBuildFile(config, ".:pass", "cache-dir")
+	err := RunBuildFile(testConfig, ".:pass", "cache-dir")
 	if err != nil {
 		t.Fatalf("expected build to only run pass rule, but failed: %w", err)
 	}
@@ -52,30 +52,30 @@ func TestRunBuildFileReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
 }
 
 func TestRunBuildFileReturnsErrorWhenFailToBuildRulesDag(t *testing.T) {
-	config := config.NewTest()
+	testConfig := config.NewTest()
 
 	data := `
 doesnt_exist()
 `
 
-	if err := afero.WriteFile(config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
+	if err := afero.WriteFile(testConfig.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
 		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
-	err := RunBuildFile(config, ".:all", "cache-dir")
+	err := RunBuildFile(testConfig, ".:all", "cache-dir")
 	if err == nil {
 		t.Fatal("expected to fail to build dag")
 	}
 }
 
 func TestRunBuildFileReturnsErrorWhenATargetDoesntExist(t *testing.T) {
-	config := config.NewTest()
+	testConfig := config.NewTest()
 
-	if err := afero.WriteFile(config.Fs, "build.ghostdog", []byte(""), 0644); err != nil {
+	if err := afero.WriteFile(testConfig.Fs, "build.ghostdog", []byte(""), 0644); err != nil {
 		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
-	err := RunBuildFile(config, ".:pass", "cache-dir")
+	err := RunBuildFile(testConfig, ".:pass", "cache-dir")
 	if err == nil {
 		t.Fatal("expected an error when target not found")
 	}
@@ -86,17 +86,17 @@ func TestRunBuildFileReturnsErrorWhenATargetDoesntExist(t *testing.T) {
 }
 
 func TestRunBuildFileReturnsErrorWhenACommandReturnsNonZeroExit(t *testing.T) {
-	config := config.NewTest()
+	testConfig := config.NewTest()
 
 	data := `
 rule(name="test", sources=[], commands=["false"], outputs=[])
 `
 
-	if err := afero.WriteFile(config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
+	if err := afero.WriteFile(testConfig.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
 		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
 	}
 
-	err := RunBuildFile(config, ".:all", "cache-dir")
+	err := RunBuildFile(testConfig, ".:all", "cache-dir")
 	if err == nil {
 		t.Fatal("expected test command to fail")
 	}
