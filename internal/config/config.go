@@ -16,7 +16,8 @@ type Config struct {
 }
 
 type TestConfig struct {
-	Config Config
+	Config     Config
+	LogHandler *memory.Handler
 }
 
 func New(logLevel string) (Config, error) {
@@ -51,7 +52,8 @@ func New(logLevel string) (Config, error) {
 
 func NewTest() TestConfig {
 	log.SetLevel(log.DebugLevel)
-	log.SetHandler(memory.New())
+	logHandler := memory.New()
+	log.SetHandler(logHandler)
 
 	logCtx := log.WithFields(log.Fields{
 		"app": "ghostdog-test",
@@ -63,5 +65,6 @@ func NewTest() TestConfig {
 			LogCtx:           logCtx,
 			WorkingDirectory: ".",
 		},
+		LogHandler: logHandler,
 	}
 }

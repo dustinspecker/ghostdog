@@ -39,3 +39,18 @@ func TestNewTest(t *testing.T) {
 		t.Errorf("expected log level to be debug, but got %s", testConfig.Config.LogCtx.Level)
 	}
 }
+
+func TestNewTestLogHandler(t *testing.T) {
+	testConfig := NewTest()
+
+	testConfig.Config.LogCtx.Debug("test")
+
+	if len(testConfig.LogHandler.Entries) != 1 {
+		t.Fatalf("expected to have 1 log entry: %v", testConfig.LogHandler.Entries)
+	}
+
+	entry := testConfig.LogHandler.Entries[0]
+	if entry.Message != "test" {
+		t.Errorf("test message should be saved in entries, but got %s", entry.Message)
+	}
+}
