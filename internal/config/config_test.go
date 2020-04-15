@@ -54,3 +54,31 @@ func TestNewTestLogHandler(t *testing.T) {
 		t.Errorf("test message should be saved in entries, but got %s", entry.Message)
 	}
 }
+
+func TestHasLogEntry(t *testing.T) {
+	testConfig := NewTest()
+	testConfig.Config.LogCtx.WithFields(log.Fields{"test": "yes", "app": "ghostdog"}).Debug("this is a test")
+
+	tests := []struct {
+		logLevel         log.Level
+		substringMessage string
+		fields           log.Fields
+		expected         bool
+	}{
+		{log.DebugLevel, "this is a test", log.Fields{}, true},
+		{log.InfoLevel, "this is a test", log.Fields{}, false},
+		{log.DebugLevel, "ghostdog", log.Fields{}, false},
+		{log.DebugLevel, "is a", log.Fields{}, true},
+		{log.DebugLevel, "is a", log.Fields{"test": "yes"}, true},
+		{log.DebugLevel, "is a", log.Fields{"test": "yes", "app": "ghostdog"}, true},
+		{log.DebugLevel, "is a", log.Fields{"test": "yes", "app": "dog"}, true},
+		{log.DebugLevel, "is a", log.Fields{"test": "yes", "app": "dustin"}, false},
+		{log.DebugLevel, "is a", log.Fields{"name": "ghostdog"}, false},
+	}
+
+	for _, tt := range tests {
+		if testConfig.HasLogEntry(tt.logLevel, tt.fields, tt.substringMessage) != tt.expected {
+			t.Errorf("expected %v for %s and %s with %v, but got %v", tt.expected, tt.logLevel, tt.substringMessage, tt.fields, testConfig.HasLogEntry(tt.logLevel, tt.fields, tt.substringMessage))
+		}
+	}
+}

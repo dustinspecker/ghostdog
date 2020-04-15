@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strings"
 
 	"github.com/apex/log"
 	"github.com/apex/log/handlers/cli"
@@ -18,6 +19,31 @@ type Config struct {
 type TestConfig struct {
 	Config     Config
 	LogHandler *memory.Handler
+}
+
+func hasFields(entry *log.Entry, fields log.Fields) bool {
+	for key, fieldValue := range fields {
+		entryValue, ok := entry.Fields[key]
+		if !ok {
+			return false
+		}
+
+		if !strings.Contains(entryValue.(string), fieldValue.(string)) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (testConfig TestConfig) HasLogEntry(logLevel log.Level, fields log.Fields, substringMessage string) bool {
+	for _, entry := range testConfig.LogHandler.Entries {
+		if entry.Level == logLevel && strings.Contains(entry.Message, substringMessage) && hasFields(entry, fields) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func New(logLevel string) (Config, error) {
