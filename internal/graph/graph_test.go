@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/apex/log"
 	"github.com/spf13/afero"
 
 	"github.com/dustinspecker/ghostdog/internal/config"
@@ -28,6 +29,10 @@ rule(name="build", sources=[], commands=["build"], outputs=[])
 
 	if err := GetGraph(testConfig.Config, ".:all", tempFile); err != nil {
 		t.Fatalf("unexpected error while getting graph: %w", err)
+	}
+
+	if !testConfig.HasLogEntry(log.InfoLevel, log.Fields{"buildFile": "build.ghostdog", "targetRule": "all"}, "build info") {
+		t.Error("expected an info message saying build info")
 	}
 
 	tempFileContent, err := afero.ReadFile(testConfig.Config.Fs, tempFile.Name())
@@ -101,8 +106,13 @@ func TestGetGraphReturnsReturnsEmptyDigraphWhenNoRules(t *testing.T) {
 }
 
 func TestGetGraphReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
-	if err := GetGraph(config.NewTest().Config, ".:all", &os.File{}); err == nil {
+	testConfig := config.NewTest()
+	if err := GetGraph(testConfig.Config, ".:all", &os.File{}); err == nil {
 		t.Error("expected an error when build.ghostdog file doesn't exist")
+	}
+
+	if !testConfig.HasLogEntry(log.ErrorLevel, log.Fields{"error": ""}, "getting build info") {
+		t.Error("expected error log with error message")
 	}
 }
 
