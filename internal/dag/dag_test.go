@@ -3,6 +3,7 @@ package dag
 import (
 	"errors"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/dustinspecker/ghostdog/internal/rule"
@@ -92,12 +93,16 @@ func TestAddDependencyReturnsErrorWhenparentIdNotFound(t *testing.T) {
 	if !errors.Is(err, ErrRuleNotFound) {
 		t.Errorf("expected ErrRuleNotFound error, but got %w", err)
 	}
+
+	if !strings.HasPrefix(err.Error(), "parentId:") {
+		t.Errorf("expected error message to start with parentId:, but got %s", err.Error())
+	}
 }
 
 func TestAddDependencyReturnsErrorWhenchildIdNotFound(t *testing.T) {
 	dag := NewDag()
 
-	if err := dag.AddRule(&rule.Rule{}); err != nil {
+	if err := dag.AddRule(&rule.Rule{Name: "parentId"}); err != nil {
 		t.Fatalf("expected no error adding parentId rule, but got %w", err)
 	}
 
@@ -108,6 +113,10 @@ func TestAddDependencyReturnsErrorWhenchildIdNotFound(t *testing.T) {
 
 	if !errors.Is(err, ErrRuleNotFound) {
 		t.Errorf("expected ErrRuleNotFound error, but got %w", err)
+	}
+
+	if !strings.HasPrefix(err.Error(), "childId:") {
+		t.Errorf("expected error message to start with childId:, but got %s", err.Error())
 	}
 }
 
