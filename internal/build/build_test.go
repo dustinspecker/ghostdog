@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/apex/log"
 	"github.com/spf13/afero"
 
 	"github.com/dustinspecker/ghostdog/internal/config"
@@ -46,8 +47,13 @@ rule(name="fail", sources=[], commands=["false"], outputs=[])
 }
 
 func TestRunBuildFileReturnsErrorWhenBuildFileDoesntExist(t *testing.T) {
-	if err := RunBuildFile(config.NewTest().Config, ".:all", "cache-dir"); err == nil {
+	testConfig := config.NewTest()
+	if err := RunBuildFile(testConfig.Config, ".:all", "cache-dir"); err == nil {
 		t.Fatal("expected an error when build.ghostdog file didn't exist")
+	}
+
+	if !testConfig.HasLogEntry(log.ErrorLevel, log.Fields{"error": ""}, "getting build info") {
+		t.Error("expected error log with error message")
 	}
 }
 
