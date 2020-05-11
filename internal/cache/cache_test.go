@@ -92,6 +92,16 @@ func TestCopyOutputsToRuleCacheDoesNothingWhenNoCommands(t *testing.T) {
 	}
 }
 
+func TestCopyOutputsToRuleCacheReturnsErrorWhenCreatingDirectoryFails(t *testing.T) {
+	rule := rule.Rule{
+		Commands: []string{"echo hey"},
+	}
+	err := CopyOutputsToRuleCache(afero.NewReadOnlyFs(afero.NewMemMapFs()), rule, "cache")
+	if err == nil {
+		t.Error("expected error when rule cache directory is failed to be created")
+	}
+}
+
 func TestCopyOutputsToRuleCacheReturnsErrorWhenOutputDoesntExist(t *testing.T) {
 	rule := rule.Rule{
 		Commands: []string{"echo hey"},
