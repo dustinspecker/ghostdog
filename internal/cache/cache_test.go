@@ -34,6 +34,26 @@ func TestCopyFileToDestination(t *testing.T) {
 	}
 }
 
+func TestCopyFileToDestinationReturnsErrorWhenCreatingDestinationDirectoryFails(t *testing.T) {
+	fs := afero.NewMemMapFs()
+
+	if err := fs.MkdirAll("cache", 0755); err != nil {
+		t.Fatalf("got error while creating cache: %w", err)
+	}
+
+	if err := fs.MkdirAll(filepath.Join("build", "output"), 0755); err != nil {
+		t.Fatalf("got error while creating build/output/dir: %w", err)
+	}
+
+	if err := afero.WriteFile(fs, filepath.Join("build", "output", "file"), []byte("hey"), 0644); err != nil {
+		t.Fatalf("got error writing build/output/file: %w", err)
+	}
+
+	if err := CopyFileToDestination(afero.NewReadOnlyFs(fs), filepath.Join("build", "output", "file"), filepath.Join("cache", "build", "output", "file")); err == nil {
+		t.Error("expected an error creating destination directory")
+	}
+}
+
 func TestCopyFileToDestinationReturnsErrorWhenFilepathDoesntExist(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
