@@ -19,7 +19,7 @@ func TestValidatePathsReturnsErrorWhenAbsolutePath(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrAbsolutePath) {
-		t.Errorf("expected error to be %w, but got %w", ErrAbsolutePath, err)
+		t.Errorf("expected error to be %w, but got %s", ErrAbsolutePath, err)
 	}
 }
 
@@ -30,7 +30,7 @@ func TestValidatePathsReturnsErrorWhenParentPathIsFound(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrParentPath) {
-		t.Errorf("expected error to be %w, but got %w", ErrParentPath, err)
+		t.Errorf("expected error to be %w, but got %s", ErrParentPath, err)
 	}
 }
 
@@ -48,7 +48,7 @@ func TestValidateNameReturnsErrorWhenNameIsAReservedName(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrReservedName) {
-		t.Errorf("expected error to be %w, but got %w", ErrReservedName, err)
+		t.Errorf("expected error to be %w, but got %s", ErrReservedName, err)
 	}
 }
 
@@ -61,7 +61,7 @@ func TestValiidateNameReturnsErrorWhenInvalidNameFormat(t *testing.T) {
 		}
 
 		if !errors.Is(err, ErrInvalidName) {
-			t.Errorf("expected error to be %w, but got %w", ErrInvalidName, err)
+			t.Errorf("expected error to be %w, but got %s", ErrInvalidName, err)
 		}
 	}
 
@@ -69,7 +69,7 @@ func TestValiidateNameReturnsErrorWhenInvalidNameFormat(t *testing.T) {
 	for _, validName := range validNames {
 		err := ValidateName(validName)
 		if err != nil {
-			t.Fatalf("ValidateName should not return an error when valid name like %s, but got: %w", validName, err)
+			t.Fatalf("ValidateName should not return an error when valid name like %s, but got: %s", validName, err)
 		}
 	}
 }

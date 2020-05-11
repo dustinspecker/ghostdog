@@ -30,14 +30,14 @@ func TestBuildExamples(t *testing.T) {
 	for _, tt := range tests {
 		tempDir, err := ioutil.TempDir("", "ghostdog-cache")
 		if err != nil {
-			t.Fatalf("unexpected error while creating tempDir: %w", err)
+			t.Fatalf("unexpected error while creating tempDir: %s", err)
 		}
 
 		t.Logf("using %s for cache directory", tempDir)
 
 		cleanOutput, err := run(ghostdogBinaryPath, tempDir, tt.exampleDirectory, examplesDirectory)
 		if err != nil {
-			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cleanOutput)
+			t.Errorf("%s failed with: %s %s", tt.exampleDirectory, err, cleanOutput)
 		}
 
 		parsedCleanOutput := string(cleanOutput)
@@ -52,7 +52,7 @@ func TestBuildExamples(t *testing.T) {
 		baseCacheDirectory := filepath.Join(tempDir, "ghostdog")
 		cleanCacheFileTree, err := getFileTree(baseCacheDirectory)
 		if err != nil {
-			t.Fatalf("unexpected error while walking after clean run: %w", err)
+			t.Fatalf("unexpected error while walking after clean run: %s", err)
 		}
 		g.Assert(t, strings.ReplaceAll(tt.exampleDirectory, "/", "_")+"-cache-tree", []byte(strings.Join(cleanCacheFileTree, "\n")))
 
@@ -60,7 +60,7 @@ func TestBuildExamples(t *testing.T) {
 		// verify working directory and packagepath change doesn't use different cache
 		cacheOutput, err := run(ghostdogBinaryPath, tempDir, ".", filepath.Join(examplesDirectory, tt.exampleDirectory))
 		if err != nil {
-			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, cacheOutput)
+			t.Errorf("%s failed with: %s %s", tt.exampleDirectory, err, cacheOutput)
 		}
 
 		parsedCacheOutput := string(cacheOutput)
@@ -72,7 +72,7 @@ func TestBuildExamples(t *testing.T) {
 
 		cacheCacheFileTree, err := getFileTree(baseCacheDirectory)
 		if err != nil {
-			t.Fatalf("unexpected error while walking after cache run: %w", err)
+			t.Fatalf("unexpected error while walking after cache run: %s", err)
 		}
 		g.Assert(t, strings.ReplaceAll(tt.exampleDirectory, "/", "_")+"-cache-tree", []byte(strings.Join(cacheCacheFileTree, "\n")))
 	}

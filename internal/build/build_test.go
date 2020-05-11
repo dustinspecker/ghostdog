@@ -20,11 +20,11 @@ rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	if err := RunBuildFile(testConfig.Config, ".:all", "cache-dir"); err != nil {
-		t.Fatalf("expected `rule` function to work: %w", err)
+		t.Fatalf("expected `rule` function to work: %s", err)
 	}
 }
 
@@ -37,12 +37,12 @@ rule(name="fail", sources=[], commands=["false"], outputs=[])
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	err := RunBuildFile(testConfig.Config, ".:pass", "cache-dir")
 	if err != nil {
-		t.Fatalf("expected build to only run pass rule, but failed: %w", err)
+		t.Fatalf("expected build to only run pass rule, but failed: %s", err)
 	}
 }
 
@@ -65,7 +65,7 @@ doesnt_exist()
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	err := RunBuildFile(testConfig.Config, ".:all", "cache-dir")
@@ -78,7 +78,7 @@ func TestRunBuildFileReturnsErrorWhenATargetDoesntExist(t *testing.T) {
 	testConfig := config.NewTest()
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	err := RunBuildFile(testConfig.Config, ".:pass", "cache-dir")
@@ -99,7 +99,7 @@ rule(name="test", sources=[], commands=["false"], outputs=[])
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	err := RunBuildFile(testConfig.Config, ".:all", "cache-dir")

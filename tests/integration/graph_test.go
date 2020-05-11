@@ -32,7 +32,7 @@ func TestGraphExamples(t *testing.T) {
 
 		output, err := cmd.CombinedOutput()
 		if err != nil {
-			t.Errorf("%s failed with: %w %s", tt.exampleDirectory, err, string(output))
+			t.Errorf("%s failed with: %s %s", tt.exampleDirectory, err, string(output))
 		}
 
 		g := goldie.New(t, goldie.WithTestNameForDir(true))

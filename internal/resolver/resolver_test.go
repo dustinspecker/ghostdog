@@ -11,11 +11,11 @@ func TestGetBuildInfoForPackage(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
 	if err := fs.MkdirAll("/home/ghostdog/foo", 0755); err != nil {
-		t.Fatalf("unexpected error while creating /home/ghostdog/foo directory: %w", err)
+		t.Fatalf("unexpected error while creating /home/ghostdog/foo directory: %s", err)
 	}
 
 	if err := afero.WriteFile(fs, "/home/ghostdog/foo/build.ghostdog", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while creating /home/ghostdog/foo/build.ghostdog: %w", err)
+		t.Fatalf("unexpected error while creating /home/ghostdog/foo/build.ghostdog: %s", err)
 	}
 
 	tests := []struct {
@@ -33,7 +33,7 @@ func TestGetBuildInfoForPackage(t *testing.T) {
 	for _, tt := range tests {
 		buildFilePath, targetRule, err := GetBuildInfoForPackage(fs, tt.workingDirectory, tt.buildTarget)
 		if err != nil {
-			t.Fatalf("unexpected error getting build file: %w", err)
+			t.Fatalf("unexpected error getting build file: %s", err)
 		}
 
 		if buildFilePath != tt.expectedBuildFilePath {

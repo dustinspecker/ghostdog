@@ -19,16 +19,16 @@ rule(name="build", sources=[], commands=["build"], outputs=[])
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	tempFile, err := afero.TempFile(testConfig.Config.Fs, "./", "temp")
 	if err != nil {
-		t.Fatalf("unexpected error while getting tempFile: %w", err)
+		t.Fatalf("unexpected error while getting tempFile: %s", err)
 	}
 
 	if err := GetGraph(testConfig.Config, ".:all", tempFile); err != nil {
-		t.Fatalf("unexpected error while getting graph: %w", err)
+		t.Fatalf("unexpected error while getting graph: %s", err)
 	}
 
 	if !testConfig.HasLogEntry(log.InfoLevel, log.Fields{"buildFile": "build.ghostdog", "targetRule": "all"}, "build info") {
@@ -37,7 +37,7 @@ rule(name="build", sources=[], commands=["build"], outputs=[])
 
 	tempFileContent, err := afero.ReadFile(testConfig.Config.Fs, tempFile.Name())
 	if err != nil {
-		t.Fatalf("unexpected error while reading tempFile: %w", err)
+		t.Fatalf("unexpected error while reading tempFile: %s", err)
 	}
 
 	expectedGraph := "digraph g {\n  \"test\" -> \"build\";\n}"
@@ -55,21 +55,21 @@ rule(name="publish", sources=["build"], commands=["publish"], outputs=[])
 `
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	tempFile, err := afero.TempFile(testConfig.Config.Fs, "./", "temp")
 	if err != nil {
-		t.Fatalf("unexpected error while getting tempFile: %w", err)
+		t.Fatalf("unexpected error while getting tempFile: %s", err)
 	}
 
 	if err := GetGraph(testConfig.Config, ".:publish", tempFile); err != nil {
-		t.Fatalf("unexpected error while getting graph: %w", err)
+		t.Fatalf("unexpected error while getting graph: %s", err)
 	}
 
 	tempFileContent, err := afero.ReadFile(testConfig.Config.Fs, tempFile.Name())
 	if err != nil {
-		t.Fatalf("unexpected error while reading tempFile: %w", err)
+		t.Fatalf("unexpected error while reading tempFile: %s", err)
 	}
 
 	expectedGraph := "digraph g {\n  \"publish\" -> \"build\";\n}"
@@ -82,21 +82,21 @@ func TestGetGraphReturnsReturnsEmptyDigraphWhenNoRules(t *testing.T) {
 	testConfig := config.NewTest()
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	tempFile, err := afero.TempFile(testConfig.Config.Fs, "./", "temp")
 	if err != nil {
-		t.Fatalf("unexpected error while getting tempFile: %w", err)
+		t.Fatalf("unexpected error while getting tempFile: %s", err)
 	}
 
 	if err := GetGraph(testConfig.Config, ".:all", tempFile); err != nil {
-		t.Fatalf("unexpected error while getting graph: %w", err)
+		t.Fatalf("unexpected error while getting graph: %s", err)
 	}
 
 	tempFileContent, err := afero.ReadFile(testConfig.Config.Fs, tempFile.Name())
 	if err != nil {
-		t.Fatalf("unexpected error while reading tempFile: %w", err)
+		t.Fatalf("unexpected error while reading tempFile: %s", err)
 	}
 
 	expectedGraph := "digraph g {\n}"
@@ -120,7 +120,7 @@ func TestGetGraphReturnsReturnsErrorWhenTargetDoesntExist(t *testing.T) {
 	testConfig := config.NewTest()
 
 	if err := afero.WriteFile(testConfig.Config.Fs, "build.ghostdog", []byte(""), 0644); err != nil {
-		t.Fatalf("unexpected error while writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error while writing build.ghostdog file: %s", err)
 	}
 
 	err := GetGraph(testConfig.Config, ".:build", &os.File{})

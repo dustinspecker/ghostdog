@@ -16,7 +16,7 @@ func TestGetHashDirectorySplitsHashesIntoMultipleDirectories(t *testing.T) {
 	cacheDirectory := "ghostdog-cache"
 	hashDirectory, err := rule.GetHashDirectory(afero.NewMemMapFs(), cacheDirectory)
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory: %s", err)
 	}
 
 	hashDirectories := strings.Split(hashDirectory, string(os.PathSeparator))
@@ -41,13 +41,13 @@ func TestGetHashDirectoryUsesRuleCommandsToMakeHash(t *testing.T) {
 
 	hashDirectoryEcho, err := rule.GetHashDirectory(afero.NewMemMapFs(), "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory for echo: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory for echo: %s", err)
 	}
 
 	rule.Commands = []string{"./script"}
 	hashDirectoryScript, err := rule.GetHashDirectory(afero.NewMemMapFs(), "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory script: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory script: %s", err)
 	}
 
 	if hashDirectoryEcho == hashDirectoryScript {
@@ -62,13 +62,13 @@ func TestGetHashDirectoryUsesRuleOutputsNamesToMakeHash(t *testing.T) {
 
 	hashDirectoryOut, err := rule.GetHashDirectory(afero.NewMemMapFs(), "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory out: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory out: %s", err)
 	}
 
 	rule.Outputs = []string{"exe"}
 	hashDirectoryExe, err := rule.GetHashDirectory(afero.NewMemMapFs(), "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory for exe: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory for exe: %s", err)
 	}
 
 	if hashDirectoryOut == hashDirectoryExe {
@@ -79,10 +79,10 @@ func TestGetHashDirectoryUsesRuleOutputsNamesToMakeHash(t *testing.T) {
 func TestGetHashDirectoryUsesChildrensOutputsContentToMakeHash(t *testing.T) {
 	memFs := afero.NewMemMapFs()
 	if err := afero.WriteFile(memFs, "file", []byte("hey"), 0644); err != nil {
-		t.Fatalf("got error while writing file: %w", err)
+		t.Fatalf("got error while writing file: %s", err)
 	}
 	if err := afero.WriteFile(memFs, "another_file", []byte("hey"), 0644); err != nil {
-		t.Fatalf("got error while writing file: %w", err)
+		t.Fatalf("got error while writing file: %s", err)
 	}
 
 	childRule := Rule{
@@ -95,13 +95,13 @@ func TestGetHashDirectoryUsesChildrensOutputsContentToMakeHash(t *testing.T) {
 
 	hashDirectoryFile, err := rule.GetHashDirectory(memFs, "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory for file: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory for file: %s", err)
 	}
 
 	childRule.Outputs = []string{"another_file"}
 	hashDirectoryAnotherFile, err := rule.GetHashDirectory(memFs, "cache")
 	if err != nil {
-		t.Fatalf("unexpected error from GetHashDirectory for another_file: %w", err)
+		t.Fatalf("unexpected error from GetHashDirectory for another_file: %s", err)
 	}
 
 	if hashDirectoryFile == hashDirectoryAnotherFile {

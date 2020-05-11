@@ -4,7 +4,7 @@ services:
   - docker
 
 go:
-  - 1.13.1
+  - 1.14.2
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

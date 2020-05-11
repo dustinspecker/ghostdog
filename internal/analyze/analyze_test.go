@@ -20,12 +20,12 @@ rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 rule(name="publish", sources=["test"], commands=["echo bye"], outputs=[])
 `
 	if err := afero.WriteFile(fs, "build.ghostdog", []byte(data), 0644); err != nil {
-		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error writing build.ghostdog file: %s", err)
 	}
 
 	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err != nil {
-		t.Fatalf("expected `rule` function to work: %w", err)
+		t.Fatalf("expected `rule` function to work: %s", err)
 	}
 
 	if len(rules) != 1 {
@@ -54,14 +54,14 @@ func TestGetRulesSupportsStarlarksLoad(t *testing.T) {
 	fs := afero.NewMemMapFs()
 
 	if err := fs.MkdirAll("libs/function", 0755); err != nil {
-		t.Fatalf("unexpected while creating libs/function directory: %w", err)
+		t.Fatalf("unexpected while creating libs/function directory: %s", err)
 	}
 
 	constantsData := `
 MAKEFILE_NAME = "Makefile"
 `
 	if err := afero.WriteFile(fs, "libs/constants.ghostdog", []byte(constantsData), 0644); err != nil {
-		t.Fatalf("unexpected error writing libs/constants.ghostdog file: %w", err)
+		t.Fatalf("unexpected error writing libs/constants.ghostdog file: %s", err)
 	}
 
 	libData := `
@@ -72,7 +72,7 @@ def test():
   rule(name="test", sources=[], commands=["echo hey"], outputs=[])
 `
 	if err := afero.WriteFile(fs, "libs/test.ghostdog", []byte(libData), 0644); err != nil {
-		t.Fatalf("unexpected error writing libs/test.ghostdog file: %w", err)
+		t.Fatalf("unexpected error writing libs/test.ghostdog file: %s", err)
 	}
 
 	buildData := `
@@ -80,12 +80,12 @@ load("libs/test.ghostdog", "test")
 test()
 `
 	if err := afero.WriteFile(fs, "build.ghostdog", []byte(buildData), 0644); err != nil {
-		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error writing build.ghostdog file: %s", err)
 	}
 
 	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
 	if err != nil {
-		t.Fatalf("expected `load` function to work and load modules relative to moduel calling load: %w", err)
+		t.Fatalf("expected `load` function to work and load modules relative to moduel calling load: %s", err)
 	}
 
 	if len(rules) != 2 {
@@ -100,7 +100,7 @@ func TestGetRulesReturnsErrorWhenLoadFunctionCalledOnNonexistentFile(t *testing.
 load("libs/test.ghostdog", "test")
 `
 	if err := afero.WriteFile(fs, "build.ghostdog", []byte(buildData), 0644); err != nil {
-		t.Fatalf("unexpected error writing build.ghostdog file: %w", err)
+		t.Fatalf("unexpected error writing build.ghostdog file: %s", err)
 	}
 
 	_, err := GetRules(testLogCtx, fs, "build.ghostdog", "all")
@@ -138,7 +138,7 @@ rule(name="publish", sources=["build"], commands=["echo bye"], outputs=[])
 
 	rules, err := GetRules(testLogCtx, fs, "build.ghostdog", "publish")
 	if err != nil {
-		t.Fatalf("expected `rule` function to work: %w", err)
+		t.Fatalf("expected `rule` function to work: %s", err)
 	}
 
 	if len(rules) != 1 {

@@ -16,7 +16,7 @@ func TestAddRuleAddRuleToListOfRules(t *testing.T) {
 		Name: "a",
 	}
 	if err := dag.AddRule(ruleA); err != nil {
-		t.Fatalf("should have added ruleA: %w", err)
+		t.Fatalf("should have added ruleA: %s", err)
 	}
 
 	if dag.Rules["a"] != ruleA {
@@ -27,7 +27,7 @@ func TestAddRuleAddRuleToListOfRules(t *testing.T) {
 		Name: "b",
 	}
 	if err := dag.AddRule(ruleB); err != nil {
-		t.Fatalf("should have added ruleB: %w", err)
+		t.Fatalf("should have added ruleB: %s", err)
 	}
 
 	if dag.Rules["b"] != ruleB {
@@ -63,14 +63,14 @@ func TestAddDependency(t *testing.T) {
 		Name: "child",
 	}
 	if err := dag.AddRule(&parent); err != nil {
-		t.Fatalf("should have added parent: %w", err)
+		t.Fatalf("should have added parent: %s", err)
 	}
 	if err := dag.AddRule(&child); err != nil {
-		t.Fatalf("should have added child: %w", err)
+		t.Fatalf("should have added child: %s", err)
 	}
 
 	if err := dag.AddDependency("parent", "child"); err != nil {
-		t.Fatalf("should have added edge between parent and child: %w", err)
+		t.Fatalf("should have added edge between parent and child: %s", err)
 	}
 
 	if !reflect.DeepEqual(parent.Children, []*rule.Rule{&child}) {
@@ -91,7 +91,7 @@ func TestAddDependencyReturnsErrorWhenparentIdNotFound(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrRuleNotFound) {
-		t.Errorf("expected ErrRuleNotFound error, but got %w", err)
+		t.Errorf("expected ErrRuleNotFound error, but got %s", err)
 	}
 
 	if !strings.HasPrefix(err.Error(), "parentId:") {
@@ -103,7 +103,7 @@ func TestAddDependencyReturnsErrorWhenchildIdNotFound(t *testing.T) {
 	dag := NewDag()
 
 	if err := dag.AddRule(&rule.Rule{Name: "parentId"}); err != nil {
-		t.Fatalf("expected no error adding parentId rule, but got %w", err)
+		t.Fatalf("expected no error adding parentId rule, but got %s", err)
 	}
 
 	err := dag.AddDependency("parentId", "childId")
@@ -112,7 +112,7 @@ func TestAddDependencyReturnsErrorWhenchildIdNotFound(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrRuleNotFound) {
-		t.Errorf("expected ErrRuleNotFound error, but got %w", err)
+		t.Errorf("expected ErrRuleNotFound error, but got %s", err)
 	}
 
 	if !strings.HasPrefix(err.Error(), "childId:") {
@@ -124,15 +124,15 @@ func TestAddDependencyReturnsErrorWhenEdgeAlreadyExists(t *testing.T) {
 	dag := NewDag()
 
 	if err := dag.AddRule(&rule.Rule{Name: "parent"}); err != nil {
-		t.Fatalf("expected no error adding parent rule, but got %w", err)
+		t.Fatalf("expected no error adding parent rule, but got %s", err)
 	}
 
 	if err := dag.AddRule(&rule.Rule{Name: "child"}); err != nil {
-		t.Fatalf("expected no error adding child rule, but got %w", err)
+		t.Fatalf("expected no error adding child rule, but got %s", err)
 	}
 
 	if err := dag.AddRule(&rule.Rule{Name: "another_child"}); err != nil {
-		t.Fatalf("expected no error adding another_child rule, but got %w", err)
+		t.Fatalf("expected no error adding another_child rule, but got %s", err)
 	}
 
 	if err := dag.AddDependency("parent", "child"); err != nil {
@@ -149,7 +149,7 @@ func TestAddDependencyReturnsErrorWhenEdgeAlreadyExists(t *testing.T) {
 	}
 
 	if !errors.Is(err, ErrEdgeAlreadyExists) {
-		t.Errorf("expected ErrEdgeAlreadyExists error, but got %w", err)
+		t.Errorf("expected ErrEdgeAlreadyExists error, but got %s", err)
 	}
 }
 

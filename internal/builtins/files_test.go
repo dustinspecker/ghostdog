@@ -45,7 +45,7 @@ func TestFiles(t *testing.T) {
 
 	value, err := Files(addRule)(thread, builtin, args, kwargs)
 	if err != nil {
-		t.Fatalf("Files failed: %w", err)
+		t.Fatalf("Files failed: %s", err)
 	}
 
 	if value != starlark.None {

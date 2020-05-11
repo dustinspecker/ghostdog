@@ -21,18 +21,18 @@ func TestGetHashForFilesSortsFilesForConsistentHash(t *testing.T) {
 
 	for filepath, fileContent := range filesWithContent {
 		if err := afero.WriteFile(fs, filepath, fileContent, 0755); err != nil {
-			t.Fatalf("received error while creating files: %w", err)
+			t.Fatalf("received error while creating files: %s", err)
 		}
 	}
 
 	hash, err := GetHashForFiles(fs, ".", []string{"file", "some/file", "some/dir/file"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving hash, but got: %w", err)
+		t.Fatalf("expected no error retrieving hash, but got: %s", err)
 	}
 
 	reorderedHash, err := GetHashForFiles(fs, ".", []string{"some/dir/file", "some/file", "file"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving reorderedHash, but got: %w", err)
+		t.Fatalf("expected no error retrieving reorderedHash, but got: %s", err)
 	}
 
 	if hash != reorderedHash {
@@ -50,18 +50,18 @@ func TestGetHashForFilesAccountsForFileNameWhenHashing(t *testing.T) {
 
 	for filepath, fileContent := range filesWithContent {
 		if err := afero.WriteFile(fs, filepath, fileContent, 0755); err != nil {
-			t.Fatalf("received error while creating files: %w", err)
+			t.Fatalf("received error while creating files: %s", err)
 		}
 	}
 
 	hash1, err := GetHashForFiles(fs, ".", []string{"file_says_hello"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving hash1, but got: %w", err)
+		t.Fatalf("expected no error retrieving hash1, but got: %s", err)
 	}
 
 	hash2, err := GetHashForFiles(fs, ".", []string{"file_also_says_hello"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving hash2, but got: %w", err)
+		t.Fatalf("expected no error retrieving hash2, but got: %s", err)
 	}
 
 	if hash1 == hash2 {
@@ -83,13 +83,13 @@ func TestGetHashForFilesConsistentHashIfOnlyBasepathChanges(t *testing.T) {
 
 	for filepath, fileContent := range filesWithContent {
 		if err := afero.WriteFile(noBasePathFs, filepath, fileContent, 0755); err != nil {
-			t.Fatalf("received error while creating files: %w", err)
+			t.Fatalf("received error while creating files: %s", err)
 		}
 	}
 
 	noBaseHash, err := GetHashForFiles(noBasePathFs, ".", []string{"file", "some/file", "some/dir/file"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving hash, but got: %w", err)
+		t.Fatalf("expected no error retrieving hash, but got: %s", err)
 	}
 
 	basePathFs := afero.NewMemMapFs()
@@ -99,13 +99,13 @@ func TestGetHashForFilesConsistentHashIfOnlyBasepathChanges(t *testing.T) {
 
 	for filepath, fileContent := range filesWithContent {
 		if err := afero.WriteFile(basePathFs, fpath.Join("basepath", filepath), fileContent, 0755); err != nil {
-			t.Fatalf("received error while creating files: %w", err)
+			t.Fatalf("received error while creating files: %s", err)
 		}
 	}
 
 	baseHash, err := GetHashForFiles(basePathFs, "basepath", []string{"file", "some/file", "some/dir/file"})
 	if err != nil {
-		t.Fatalf("expected no error retrieving hash, but got: %w", err)
+		t.Fatalf("expected no error retrieving hash, but got: %s", err)
 	}
 
 	if noBaseHash != baseHash {

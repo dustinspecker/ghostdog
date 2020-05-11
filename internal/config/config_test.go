@@ -9,7 +9,7 @@ import (
 func TestNew(t *testing.T) {
 	config, err := New("debug")
 	if err != nil {
-		t.Fatalf("unexpected error getting config: %w", err)
+		t.Fatalf("unexpected error getting config: %s", err)
 	}
 
 	if config.Fs.Name() != "OsFs" {
